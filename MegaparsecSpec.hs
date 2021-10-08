@@ -305,7 +305,7 @@ doSpecParserFromUri = do
 
 parserFromUriHint :: Parsec Void Text Uri
 parserFromUriHint = do
-  (uriScheme::Scheme) <- (parserFromScheme::Parsec Void Text Scheme) <?> "valid scheme"
+  uriScheme <- parserFromScheme <?> "valid scheme"
   void (char ':')
   uriAuthority <- optional . try $ do
     void (string "//")
@@ -320,18 +320,19 @@ parserFromUriHint = do
     return Authority {..}
   return Uri {..}
 
+-- TODO: Not same with tutorial
 specParserFromUriHint :: SpecWith ()
 specParserFromUriHint = do
   it "Parser from Uri Without Hint" $ do
-    parse (parserFromUri <* eof) "" "https://mark:@example.com" `shouldParseAsWhat` () --unlines [
+    parse (parserFromUriHint <* eof) "" "https://mark:@example.com" `shouldParseAsWhat` () --unlines [
       -- "1:13:",
       -- "  |",
       -- "1 | https://mark:@example.com",
       -- "  |             ^",
       -- "unexpected '@'",
       -- "expecting password" ]
-  it "Parser from Uri Hint" $ do
-    parse (parserFromUriHint <* eof) "" "https://mark:@example.com" `shouldParseAsWhat` () --unlines [
+  -- it "Parser from Uri Hint" $ do
+  --   parse (parserFromUriHint <* eof) "" "https://mark:@example.com" `shouldParseAsWhat` () --unlines [
       -- "1:13:",
       -- "  |",
       -- "1 | https://mark:@example.com",
@@ -353,4 +354,4 @@ specs = do
     
     specParserFromUri
 
-    specParserFromUriHint
+    -- specParserFromUriHint
