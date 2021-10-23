@@ -13,24 +13,6 @@ type A = Char
 
 newtype State s a = State { runState :: s -> (a,s) }
 
-get :: State as as
-get = State (\as -> (as, as))
-
-put :: s -> State s ()
-put ss = State (\s -> ((), ss))
-
-modify :: (s -> s) -> State s ()
-modify f = State(\s -> ((), f s))
-
-gets :: (s -> a) -> State s a
-gets f = State (\s -> (f s, s))
-
-evalState :: State s a -> s -> a
-evalState st s = fst $ runState st s
-
-execState :: State s a -> s -> s
-execState st s = snd $ runState st s
-
 instance Functor (State s) where
   fmap :: (a -> b) -> State s a -> State s b
   fmap f st = State (\s -> let (a, s1) = runState st s
@@ -54,6 +36,26 @@ instance Monad (State s) where
                                     st2 = fst2 a
                                     (a1, s2) = runState st2 s1
                                 in (a1, s2))
+
+get :: State as as
+get = State (\as -> (as, as))
+
+put :: s -> State s ()
+put ss = State (\s -> ((), ss))
+
+modify :: (s -> s) -> State s ()
+modify f = State(\s -> ((), f s))
+
+gets :: (s -> a) -> State s a
+gets f = State (\s -> (f s, s))
+
+evalState :: State s a -> s -> a
+evalState st s = fst $ runState st s
+
+execState :: State s a -> s -> s
+execState st s = snd $ runState st s
+
+----------------------------------------------------------------------------------------------------
 
 specs :: SpecWith ()
 specs = do

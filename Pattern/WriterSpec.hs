@@ -19,31 +19,37 @@ instance Monoid w => Monad (Writer w) where
 tell :: w -> Writer w ()
 tell w = Writer ((), w)
 
-logOne :: Int -> Writer String Int
+----------------------------------------------------------------------------------------------------
+
+newtype Year = Year Int deriving (Show, Eq)
+nextYear :: Year -> Year
+nextYear (Year y) = Year (y + 1)
+
+logOne :: Year -> Writer String Year
 logOne x = do
   tell ("log : " ++ show x ++ ", ")
   return x
 
-log :: Writer String Int
+log :: Writer String Year
 log = do
-  logOne 1
-  logOne 2
-  logOne 3
+  logOne (Year 1998)
+  logOne (Year 2015)
+  logOne (Year 2021)
 
 specLog :: SpecWith ()
 specLog = do
   it "log" $ do
-    runWriter log `shouldBe` (3, "log : 1, log : 2, log : 3, ")
+    runWriter log `shouldBe` (Year 2021, "log : Year 1998, log : Year 2015, log : Year 2021, ")
   
   it "fmap" $ do
-    fmap (*3) log `shouldBe` Writer (9,"log : 1, log : 2, log : 3, ")
+    fmap (nextYear) log `shouldBe` Writer (Year 2022,"log : Year 1998, log : Year 2015, log : Year 2021, ")
 
   it "(<*>)" $ do
-    Writer ((*2), "hi_") <*> Writer (11, "log_here") `shouldBe` Writer (22, "hi_log_here")
-    Writer ((*2), "log_here") <*> Writer (11, "_hi") `shouldBe` Writer (22, "log_here_hi")
+    Writer ((nextYear), "hi_") <*> Writer (Year 2021, "log_here") `shouldBe` Writer (Year 2022, "hi_log_here")
+    Writer ((nextYear), "log_here") <*> Writer (Year 2021, "_hi") `shouldBe` Writer (Year 2022, "log_here_hi")
 
   it ">>=" $ do
-    (Writer (2, "hello ") >>= \x -> Writer (2 * x, "world")) `shouldBe` Writer (4, "hello world")
+    (Writer (Year 2021, "hello ") >>= \x -> Writer (nextYear x, "world")) `shouldBe` Writer (Year 2022, "hello world")
 
 specs :: SpecWith ()
 specs = do

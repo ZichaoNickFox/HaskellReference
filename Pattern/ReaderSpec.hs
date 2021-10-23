@@ -1,29 +1,31 @@
 module Pattern.ReaderSpec (specs) where
 
-import Control.Monad.Reader
 import Test.Hspec
+import Control.Monad.Reader
 
-specTomAndJerry :: SpecWith ()
-specTomAndJerry = do
-  it "Tom And Jerry" $ do
-    runReader tomAndJerry "Who's there? " `shouldBe`
-      "Who's there? This is Tom.\nWho's there? This is Jerry."
+newtype Ask = Ask { content :: String } deriving (Show, Eq)
 
-tom :: Reader String String
+tom :: Reader Ask String
 tom = do
-  env <- ask
-  return (env ++ "This is Tom.");
+  asking <- ask
+  return (content asking ++ "This is Tom.");
 
-jerry :: Reader String String
+jerry :: Reader Ask String
 jerry = do
-  env <- ask
-  return (env ++ "This is Jerry.");
+  asking <- ask
+  return (content asking ++ "This is Jerry.");
 
-tomAndJerry :: Reader String String
+tomAndJerry :: Reader Ask String
 tomAndJerry = do
   t <- tom
   j <- jerry
   return (t ++ "\n" ++ j)
+
+specTomAndJerry :: SpecWith ()
+specTomAndJerry = do
+  it "Tom And Jerry" $ do
+    runReader tomAndJerry (Ask "Who's there? ") `shouldBe`
+      "Who's there? This is Tom.\nWho's there? This is Jerry."
 
 ----------------------------------------------------------------------------------------------------
 
