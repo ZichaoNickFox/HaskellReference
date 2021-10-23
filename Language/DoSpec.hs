@@ -1,4 +1,4 @@
-module DoSpec (specs) where
+module Language.DoSpec (specs) where
 
 import Test.Hspec
 import Data.Char

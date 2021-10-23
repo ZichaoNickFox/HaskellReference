@@ -1,4 +1,4 @@
-module ReaderSpec (specs) where
+module Pattern.ReaderSpec (specs) where
 
 import Control.Monad.Reader
 import Test.Hspec

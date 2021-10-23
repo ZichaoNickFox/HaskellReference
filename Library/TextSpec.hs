@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TextSpec (specs) where
+module Library.TextSpec (specs) where
 
 import Data.Text
 import Test.Hspec

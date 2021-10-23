@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module MegaparsecSpec (specs) where
+module Library.MegaparsecSpec (specs) where
 
 import qualified Control.Applicative
 import Control.Monad

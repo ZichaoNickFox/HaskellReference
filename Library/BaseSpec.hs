@@ -1,4 +1,4 @@
-module BaseSpec where
+module Library.BaseSpec where
 
 import Test.Hspec
 import Data.Char

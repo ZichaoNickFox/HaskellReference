@@ -1,4 +1,4 @@
-module WriterSpec (specs) where
+module Pattern.WriterSpec (specs) where
 
 import Util (shouldBeWhat)
 import Control.Monad

@@ -1,23 +1,27 @@
 module Main where
 
 import Test.Hspec
-import qualified BaseSpec
-import qualified MegaparsecSpec
-import qualified TextSpec
-import qualified DoSpec
-import qualified StateSpec
-import qualified ReaderSpec
-import qualified WriterSpec
-import qualified LanguageExtensionSpec
+import qualified Language.DoSpec
+import qualified Language.LanguageExtensionSpec
+
+import qualified Library.BaseSpec
+import qualified Library.MegaparsecSpec
+import qualified Library.TextSpec
+
+import qualified Pattern.StateSpec
+import qualified Pattern.ReaderSpec
+import qualified Pattern.WriterSpec
 
 main :: IO()
 main = do
   hspec $ do
-    MegaparsecSpec.specs
-    BaseSpec.specs
-    TextSpec.specs
-    DoSpec.specs
-    StateSpec.specs
-    ReaderSpec.specs
-    WriterSpec.specs
-    LanguageExtensionSpec.specs
+    Language.DoSpec.specs
+    Language.LanguageExtensionSpec.specs
+
+    Library.BaseSpec.specs
+    Library.MegaparsecSpec.specs
+    Library.TextSpec.specs
+
+    Pattern.ReaderSpec.specs
+    Pattern.StateSpec.specs
+    Pattern.WriterSpec.specs
