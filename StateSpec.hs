@@ -8,10 +8,6 @@ import Data.Functor
 import Prelude
 import Test.Hspec
 
-shouldBeWhat :: (Show a) => a -> () -> IO ()
-shouldBeWhat a () = do
-  print $ show a
-
 type S = Int
 type A = Char
 

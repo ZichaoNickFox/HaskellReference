@@ -7,6 +7,7 @@ import qualified TextSpec
 import qualified DoSpec
 import qualified StateSpec
 import qualified ReaderSpec
+import qualified WriterSpec
 
 main :: IO()
 main = do
@@ -17,3 +18,4 @@ main = do
     DoSpec.specs
     StateSpec.specs
     ReaderSpec.specs
+    WriterSpec.specs
