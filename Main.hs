@@ -8,6 +8,7 @@ import qualified DoSpec
 import qualified StateSpec
 import qualified ReaderSpec
 import qualified WriterSpec
+import qualified LanguageExtensionSpec
 
 main :: IO()
 main = do
@@ -19,3 +20,4 @@ main = do
     StateSpec.specs
     ReaderSpec.specs
     WriterSpec.specs
+    LanguageExtensionSpec.specs

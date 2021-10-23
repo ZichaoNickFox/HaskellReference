@@ -253,14 +253,14 @@ optional p = (Just <$> p) <|> pure Nothing
 parserFromUri :: Parsec Void Text Uri
 parserFromUri = do
   uriScheme <- parserFromScheme
-  void (char ':')
+  char ':'
   uriAuthority <- optional . try $ do
-    void (string "//")
+    string "//"
     authUser <- optional . try $ do
       user <- pack <$> some alphaNumChar
-      void (char ':')
+      char ':'
       password <- pack <$> some alphaNumChar
-      void (char '@')
+      char '@'
       return (user, password)
     authHost <- pack <$> some (alphaNumChar <|> char '.')
     authPort <- optional (char ':' *> decimal)
@@ -306,14 +306,14 @@ doSpecParserFromUri = do
 parserFromUriHint :: Parsec Void Text Uri
 parserFromUriHint = do
   uriScheme <- parserFromScheme <?> "valid scheme"
-  void (char ':')
+  char ':'
   uriAuthority <- optional . try $ do
-    void (string "//")
+    string "//"
     authUser <- optional . try $ do
       user <- pack <$> some alphaNumChar <?> "username"
-      void (char ':')
+      char ':'
       password <- pack <$> some alphaNumChar <?> "password"
-      void (char '@')
+      char '@'
       return (user, password)
     authHost <- pack <$> some (alphaNumChar <|> char '.') <?> "hostname"
     authPort <- optional (char ':' *> label "port number" decimal)
