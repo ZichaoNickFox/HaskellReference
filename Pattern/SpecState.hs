@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Pattern.StateSpec (specs) where
+module Pattern.SpecState (specs) where
 
 import Control.Monad
 import Data.Functor

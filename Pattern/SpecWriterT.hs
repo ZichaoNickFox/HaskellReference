@@ -1,4 +1,4 @@
-module Pattern.WriterSpec (specs) where
+module Pattern.SpecWriterT (specs) where
 
 import Util (shouldBeWhat)
 import Control.Monad
@@ -6,18 +6,18 @@ import Data.Functor.Identity
 import Prelude hiding (log)
 import Test.Hspec
 
-newtype Writer w a = Writer { runWriter :: (a, w) } deriving (Show, Eq)
+newtype WriterT m w a = Writer { runWriter :: m (a, w) } deriving (Show, Eq)
 
-instance Functor (Writer w) where
-  fmap f (Writer (a, w)) = Writer (f a, w)
-instance Monoid w => Applicative (Writer w) where
-  (<*>) (Writer (f, w)) (Writer (a, w')) = Writer (f a, w <> w')
+instance Functor (Writer m w) where
+  fmap f (Writer m (a, w)) = Writer m (f a, w)
+instance Monoid w => Applicative (Writer m w) where
+  (<*>) (Writer m (f, w)) (Writer m (a, w')) = Writer m (f a, w <> w')
   pure a = Writer (a, mempty)
 instance Monoid w => Monad (Writer w) where
-  (>>=) (Writer (a, w)) f = let Writer (a', w') = f a in Writer (a', w <> w')
+  (>>=) (Writer m (a, w)) f = let Writer m (a', w') = f a in Writer m (a', w <> w')
 
-tell :: w -> Writer w ()
-tell w = Writer ((), w)
+tell :: w -> Writer m w ()
+tell w = Writer m ((), w)
 
 ----------------------------------------------------------------------------------------------------
 

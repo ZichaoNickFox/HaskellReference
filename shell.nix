@@ -4,6 +4,7 @@ let
     p.hspec
     p.megaparsec
     p.text
+    p.typerep-map
   ]);
 in
 pkgs.mkShell {
