@@ -2,7 +2,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Library.SpecMegaparsec (specs) where
+module Library.MegaparsecSpec (spec) where
 
 import qualified Control.Applicative
 import Control.Monad
@@ -342,8 +342,8 @@ specParserFromUriHint = do
   
 ----------------------------------------------------------------------------------------------------
 
-specs::SpecWith()
-specs = do
+spec::SpecWith()
+spec = do
   describe "MegaparsecSpec" $ do
     specParserFromSatisfy
     specParserFromString      

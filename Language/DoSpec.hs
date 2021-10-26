@@ -1,4 +1,4 @@
-module Language.SpecDo (specs) where
+module Language.DoSpec (spec) where
 
 import Test.Hspec
 import Data.Char
@@ -57,8 +57,8 @@ specNeedDo''' =
   Just "b" >>
   Just "c"
 
-specs::SpecWith()
-specs =
+spec::SpecWith()
+spec =
   describe "DoSpec" $ do
     it "Erase Do" $ do
       specEraseDo `shouldBe` Just "6"

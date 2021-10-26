@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Library.SpecText (specs) where
+module Library.TextSpec (spec) where
 
 import Data.Text
 import Test.Hspec
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "Data.Text" $ do
     it "pack on {- LANGUAGE OverloadedStrings -}" $ do
       pack "hello" `shouldBe` "hello"

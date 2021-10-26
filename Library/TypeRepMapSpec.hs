@@ -1,7 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications #-}
 
-module Library.SpecTypeRepMap (specs) where
+module Library.TypeRepMapSpec (spec) where
 
 import Data.TMap
 import Prelude hiding (lookup)
@@ -11,8 +11,8 @@ import Util
 tm :: TMap
 tm = insert True $ one (42::Int)
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "TypeRepMap" $ do
     it "show" $ do
       (show tm) `shouldBe` "TypeRepMap [Bool, Int]"

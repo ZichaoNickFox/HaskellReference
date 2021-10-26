@@ -1,4 +1,4 @@
-module Pattern.SpecWriter (specs) where
+module Pattern.WriterSpec (spec) where
 
 import Util (shouldBeWhat)
 import Control.Monad
@@ -79,7 +79,7 @@ specLog = do
   it ">>=" $ do
     (Writer (Year 2021, "hello ") >>= \x -> Writer (nextYear x, "world")) `shouldBe` Writer (Year 2022, "hello world")
 
-specs :: SpecWith ()
-specs = do
-  describe "Writer Specs" $ do
+spec :: SpecWith ()
+spec = do
+  describe "Writer Spec" $ do
     specLog

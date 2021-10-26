@@ -1,11 +1,11 @@
 {-# LANGUAGE TypeApplications #-}
 
-module LanguageExtension.SpecTypeApplications (specs) where
+module LanguageExtension.TypeApplicationsSpec (spec) where
 
 import Test.Hspec
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "TypeApplications" $ do
     it "read" $ do
       (read "12" :: Int) `shouldBe` 12

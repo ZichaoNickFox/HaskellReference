@@ -1,4 +1,4 @@
-module Pattern.SpecReader (specs) where
+module Pattern.ReaderSpec (spec) where
 
 import Test.Hspec
 import Control.Monad.Reader
@@ -42,7 +42,7 @@ specTomAndJerry = do
 
 ----------------------------------------------------------------------------------------------------
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "Reader Spec" $ do
     specTomAndJerry

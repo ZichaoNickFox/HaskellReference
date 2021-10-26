@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module LanguageExtension.SpecRecordWildCards (specs) where
+module LanguageExtension.RecordWildCardsSpec (spec) where
 
 import Test.Hspec
 
@@ -29,7 +29,7 @@ specRecordWildCards = do
     rightNoWildCard "Zichao" "Liu" `shouldBe` Person "Zichao" "Liu"
     rightWildCard "Zichao" "Liu" `shouldBe` Person "Zichao" "Liu"
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "LanguageExtensionSpec" $ do
     specRecordWildCards

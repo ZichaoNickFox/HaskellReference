@@ -1,12 +1,12 @@
-module Library.SpecPrelude where
+module Library.PreludeSpec where
 
 import Test.Hspec
 import Data.Char
 import Control.Monad
 import Control.Applicative
 
-specs::SpecWith()
-specs = do
+spec::SpecWith()
+spec = do
   describe "Prelude" $ do
     it "flip" $ do
       flip (++) "hello" "world" `shouldBe` "worldhello" 

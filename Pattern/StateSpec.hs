@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Pattern.SpecState (specs) where
+module Pattern.StateSpec (spec) where
 
 import Control.Monad
 import Data.Functor
@@ -57,8 +57,8 @@ execState st s = snd $ runState st s
 
 ----------------------------------------------------------------------------------------------------
 
-specs :: SpecWith ()
-specs = do
+spec :: SpecWith ()
+spec = do
   describe "StateSpec" $ do
     it "return' : set value" $ do
       runState (return 'a') 1 `shouldBe` ('a', 1)
