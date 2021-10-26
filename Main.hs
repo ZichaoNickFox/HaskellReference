@@ -4,6 +4,7 @@ import Test.Hspec
 import qualified Language.SpecDo
 
 import qualified LanguageExtension.SpecRecordWildCards
+import qualified LanguageExtension.SpecNoImplicitPrelude
 
 import qualified Library.SpecBase
 import qualified Library.SpecMegaparsec
@@ -20,6 +21,7 @@ main = do
     Language.SpecDo.specs
     
     LanguageExtension.SpecRecordWildCards.specs
+    LanguageExtension.SpecNoImplicitPrelude.specs
 
     Library.SpecBase.specs
     Library.SpecMegaparsec.specs
