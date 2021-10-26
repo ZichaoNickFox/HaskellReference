@@ -1,8 +1,10 @@
-
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Library.SpecTypeRepMap (specs) where
 
 import Data.TMap
+import Prelude hiding (lookup)
 import Test.Hspec
 import Util
 
@@ -18,5 +20,12 @@ specs = do
     it "insert" $ do
       size tm `shouldBe` 2
 
-    -- it "lookup" $ do
-    --   (lookup tm :: Maybe Int) `shouldBe` 42
+    it "lookup" $ do
+      (lookup tm :: Maybe Int) `shouldBe` (Just 42)
+      (lookup tm :: Maybe Bool) `shouldBe` (Just True)
+      (lookup tm :: Maybe String) `shouldBe` Nothing
+    
+    it "member" $ do
+      (member @Int tm) `shouldBe` True
+      (member @Bool tm) `shouldBe` True
+      (member @String tm) `shouldBe` False
