@@ -1,7 +1,8 @@
-module Library.PreludeSpec where
+module Library.BaseSpec where
 
 import Test.Hspec
 import Data.Char
+import Data.Either
 import Control.Monad
 import Control.Applicative
 
@@ -39,3 +40,8 @@ spec = do
 
     it "read" $ do
       (read "12" :: Int) `shouldBe` 12
+  
+  describe "Data.Either" $ do
+    it "construct" $ do
+      (Left 1 :: Either Int String) `shouldBe` (Left 1 :: Either Int String)
+      (Right "1" :: Either Int String) `shouldBe` (Right "1" :: Either Int String)

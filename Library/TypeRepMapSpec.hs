@@ -43,4 +43,5 @@ spec = do
       -- delete :: forall a. Typeable a => TMap -> TMap
       (size $ delete @Int $ one @Int 2021) `shouldBe` 0
 
-    
+    -- it "keys" $ do
+    --   keys (insert True $ one @Int 2021) `shouldBe` [Bool, Int]
