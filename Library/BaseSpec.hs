@@ -30,6 +30,10 @@ spec = do
       fmap show (Just 1) `shouldBe` Just "1"
       (+1) <$> [1, 2, 3] `shouldBe` [2, 3, 4]
 
+    it "when" $ do
+      when True (Just ()) `shouldBe` (Just ())
+      when False (Just ()) `shouldBe` (return ())
+
     it "unless" $ do
       unless False (Just ()) `shouldBe` (Just ())
       unless True (Just ()) `shouldBe` (return ())
@@ -45,3 +49,10 @@ spec = do
     it "construct" $ do
       (Left 1 :: Either Int String) `shouldBe` (Left 1 :: Either Int String)
       (Right "1" :: Either Int String) `shouldBe` (Right "1" :: Either Int String)
+
+  describe "Data.Tuple" $ do
+    it "fst" $ do
+      fst (1, 2) `shouldBe` 1
+
+    it "sec" $ do
+      snd (1, 2) `shouldBe` 2

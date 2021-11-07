@@ -5,6 +5,8 @@ let
     p.megaparsec
     p.text
     p.typerep-map
+    p.http-types
+    p.wai
   ]);
 in
 pkgs.mkShell {

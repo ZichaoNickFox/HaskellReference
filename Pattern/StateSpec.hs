@@ -8,9 +8,6 @@ import Data.Functor
 import Prelude
 import Test.Hspec
 
-type S = Int
-type A = Char
-
 newtype State s a = State { runState :: s -> (a,s) }
 
 instance Functor (State s) where
@@ -62,15 +59,12 @@ spec = do
   describe "StateSpec" $ do
     it "return' : set value" $ do
       runState (return 'a') 1 `shouldBe` ('a', 1)
-      (runState :: State S A->S->(A,S)) ((return :: A -> State S A) 'a'::State S A) 1 `shouldBe` ('a', 1)
 
     it "get : set value, state same" $ do
       runState get 'a' `shouldBe` ('a', 'a')
-      runState (get::State A A) 'a' `shouldBe` ('a', 'a')
     
     it "put : set value (), set state" $ do
       runState (put 5) 1 `shouldBe` ((), 5)
-      runState ((put :: S -> State S ()) 5 :: State S ()) 1 `shouldBe` ((), 5)
 
     it "modify : set value (), modify state" $ do
       runState (modify (+10)) 1 `shouldBe` ((), 11)
