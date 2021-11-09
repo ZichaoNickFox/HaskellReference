@@ -1,6 +1,7 @@
 module Template (spec) where
 
 import Test.Hspec
+import Util
 
 sub1Spec :: SpecWith ()
 sub1Spec = do
@@ -18,6 +19,5 @@ sub2Spec = do
 
 spec :: SpecWith ()
 spec = do
-  describe "template" $ do
-    sub1Spec
-    sub2Spec
+  sub1Spec
+  sub2Spec

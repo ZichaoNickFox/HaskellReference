@@ -7,6 +7,7 @@ let
     p.typerep-map
     p.http-types
     p.wai
+    p.vault
   ]);
 in
 pkgs.mkShell {

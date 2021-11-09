@@ -1,7 +1,17 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Pattern.StateTSpec (spec) where
+module Pattern.StateTSpec (
+  spec,
+  StateT,
+  getT,
+  putT,
+  modifyT,
+  getsT,
+  evalStateT,
+  execStateT,
+  runStateT
+) where
 
 import Control.Arrow
 import Control.Monad
