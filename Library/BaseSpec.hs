@@ -3,56 +3,103 @@ module Library.BaseSpec where
 import Test.Hspec
 import Data.Char
 import Data.Either
+import Data.IORef
 import Control.Monad
 import Control.Applicative
+import System.Environment
 
-spec::SpecWith()
-spec = do
-  describe "Prelude" $ do
-    it "flip" $ do
-      flip (++) "hello" "world" `shouldBe` "worldhello" 
-      flip (/) 3 6 `shouldBe` 2
+preludeSpec :: SpecWith ()
+preludeSpec = do
+  it "Prelude" $ do
+    flip (++) "hello" "world" `shouldBe` "worldhello" 
+    flip (/) 3 6 `shouldBe` 2
 
-    it "unlines" $ do
-      unlines ["a"] `shouldBe` "a\n"
-      unlines ["a", "b"] `shouldBe` "a\nb\n"
-      unlines ["a", "\n", "b"] `shouldBe` "a\n\n\nb\n"
+    unlines ["a"] `shouldBe` "a\n"
+    unlines ["a", "b"] `shouldBe` "a\nb\n"
+    unlines ["a", "\n", "b"] `shouldBe` "a\n\n\nb\n"
 
-    it "const" $ do
-      const "a" 1 `shouldBe` "a"
-      const ['a', 'b'] () `shouldBe` ['a', 'b']
+    const "a" 1 `shouldBe` "a"
+    const ['a', 'b'] () `shouldBe` ['a', 'b']
 
-    it "isDigit" $ do
-      isDigit '1' `shouldBe` True
-      isDigit 'a' `shouldBe` False
+    isDigit '1' `shouldBe` True
+    isDigit 'a' `shouldBe` False
 
-    it "fmap, <$>" $ do
-      fmap show (Just 1) `shouldBe` Just "1"
-      (+1) <$> [1, 2, 3] `shouldBe` [2, 3, 4]
+    fmap show (Just 1) `shouldBe` Just "1"
+    (+1) <$> [1, 2, 3] `shouldBe` [2, 3, 4]
 
-    it "when" $ do
-      when True (Just ()) `shouldBe` (Just ())
-      when False (Just ()) `shouldBe` (return ())
+    when True (Just ()) `shouldBe` (Just ())
+    when False (Just ()) `shouldBe` (return ())
 
-    it "unless" $ do
-      unless False (Just ()) `shouldBe` (Just ())
-      unless True (Just ()) `shouldBe` (return ())
+    unless False (Just ()) `shouldBe` (Just ())
+    unless True (Just ()) `shouldBe` (return ())
     
-    it "void" $ do
-      void (Just 1) `shouldBe` (Just ())
-      void Nothing `shouldBe` Nothing
+    void (Just 1) `shouldBe` (Just ())
+    void Nothing `shouldBe` Nothing
 
-    it "read" $ do
-      (read "12" :: Int) `shouldBe` 12
+    (read "12" :: Int) `shouldBe` 12
+    
+    readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "Hello World")
+
+    writeFile "Data/Test.txt" "ABC"
+    >> readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "ABC")
+    >> writeFile "Data/Test.txt" "Hello World"
+
+----------------------------------------------------------------------------------------------------
+
+dataEitherSpec :: SpecWith ()
+dataEitherSpec = do
+  it "Data.Either" $ do
+    (Left 1 :: Either Int String) `shouldBe` (Left 1 :: Either Int String)
+    (Right "1" :: Either Int String) `shouldBe` (Right "1" :: Either Int String)
+
+----------------------------------------------------------------------------------------------------
+
+dataTupleSpec :: SpecWith ()
+dataTupleSpec = do
+  it "Data.Tuple" $ do
+    fst (1, 2) `shouldBe` 1
+    snd (1, 2) `shouldBe` 2
+
+----------------------------------------------------------------------------------------------------
+
+ioRefSpec :: SpecWith ()
+ioRefSpec = do
+  it "IORef" $ do
+    r <- newIORef 0
+    writeIORef r 1
+    v <- readIORef r
+    show v `shouldBe` "1"
+    v <- atomicModifyIORef r (\x -> (x, x + 10))
+    show v `shouldBe` "11"
+    
+----------------------------------------------------------------------------------------------------
+
+systemEnvironmentSpec :: SpecWith ()
+systemEnvironmentSpec = do
+  describe "System.Environment" $ do
+    it "environment interfaces" $ do
+      setEnv "TestHaskellEnv" "version0.1"
+      getEnv "TestHaskellEnv" >>= (\s -> s `shouldBe` "version0.1")
+      lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` (Just "version0.1"))
+      unsetEnv "TestHaskellEnv"
+      -- getEnv "TestHaskellEnv" CRASH
+      lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` Nothing)
+
+----------------------------------------------------------------------------------------------------
+
+-- controlMonadSpec :: SpecWith ()
+-- controlMonadSpec = do
+--   describe "Control.Monad" $ do
+--     it "liftIO" $ do
+
+
+spec::SpecWith ()
+spec = do
+  preludeSpec
+  dataEitherSpec
+  dataTupleSpec
+  ioRefSpec
+  systemEnvironmentSpec
+  -- controlMonadSpec
   
-  describe "Data.Either" $ do
-    it "construct" $ do
-      (Left 1 :: Either Int String) `shouldBe` (Left 1 :: Either Int String)
-      (Right "1" :: Either Int String) `shouldBe` (Right "1" :: Either Int String)
-
-  describe "Data.Tuple" $ do
-    it "fst" $ do
-      fst (1, 2) `shouldBe` 1
-
-    it "sec" $ do
-      snd (1, 2) `shouldBe` 2
+    
