@@ -61,8 +61,8 @@ censorSpec = do
     eliminateBad :: [String] -> [String]
     eliminateBad = filter (\x -> (x /= "bad"))
 
-specLog :: SpecWith ()
-specLog = do
+logSpec :: SpecWith ()
+logSpec = do
   it "tell" $ do
     runWriter tellSpec `shouldBe` (Year 2021, "log Year 1998, log Year 2015, log Year 2021")
 
@@ -81,5 +81,4 @@ specLog = do
 
 spec :: SpecWith ()
 spec = do
-  describe "Writer Spec" $ do
-    specLog
+  logSpec

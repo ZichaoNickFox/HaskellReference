@@ -51,35 +51,34 @@ execStateT st s = snd <$> runStateT st s
 
 spec :: SpecWith ()
 spec = do
-  describe "StateTSpec" $ do
-    it "return' : set value" $ do
-      runStateT (return 'a') (1::Int) `shouldBe` Just ('a', 1)
+  it "return' : set value" $ do
+    runStateT (return 'a') (1::Int) `shouldBe` Just ('a', 1)
 
-    it "getT : set value, state same" $ do
-      runStateT getT 'a' `shouldBe` Just ('a', 'a')
-    
-    it "putT : set value (), set state" $ do
-      runStateT (putT 5) 1 `shouldBe` Just ((), 5)
+  it "getT : set value, state same" $ do
+    runStateT getT 'a' `shouldBe` Just ('a', 'a')
+  
+  it "putT : set value (), set state" $ do
+    runStateT (putT 5) 1 `shouldBe` Just ((), 5)
 
-    it "modifyT : set value (), modify state" $ do
-      runStateT (modifyT (+10)) 1 `shouldBe` Just ((), 11)
+  it "modifyT : set value (), modify state" $ do
+    runStateT (modifyT (+10)) 1 `shouldBe` Just ((), 11)
 
-    it "getsT : get, modify value, set state" $ do
-      runStateT (getsT (+10)) 1 `shouldBe` Just (11, 1)
+  it "getsT : get, modify value, set state" $ do
+    runStateT (getsT (+10)) 1 `shouldBe` Just (11, 1)
 
-    it "evalStateT : take value" $ do
-      evalStateT (getsT (+10)) 1 `shouldBe` Just 11
+  it "evalStateT : take value" $ do
+    evalStateT (getsT (+10)) 1 `shouldBe` Just 11
 
-    it "execStateT : take state" $ do
-      execStateT (getsT (+10)) 1 `shouldBe` Just 1
-    
-    it "combination" $ do
-      runStateT (do {putT 5; return 'a'}) 1 `shouldBe` Just ('a', 5)
-      runStateT (putT 5  >> return 'a') 1 `shouldBe` Just ('a', 5)
-      runStateT (getT >>= \x -> putT (x + 1) >> return x) 1 `shouldBe` Just (1, 2)
-      runStateT (do {x <- getT; putT (x - 1); getT}) 1 `shouldBe` Just (0, 0)
-      runStateT (do {getT; return "a"; return "b"}) 1 `shouldBe` Just ("b", 1)
+  it "execStateT : take state" $ do
+    execStateT (getsT (+10)) 1 `shouldBe` Just 1
+  
+  it "combination" $ do
+    runStateT (do {putT 5; return 'a'}) 1 `shouldBe` Just ('a', 5)
+    runStateT (putT 5  >> return 'a') 1 `shouldBe` Just ('a', 5)
+    runStateT (getT >>= \x -> putT (x + 1) >> return x) 1 `shouldBe` Just (1, 2)
+    runStateT (do {x <- getT; putT (x - 1); getT}) 1 `shouldBe` Just (0, 0)
+    runStateT (do {getT; return "a"; return "b"}) 1 `shouldBe` Just ("b", 1)
 
-    it "StateT whatever m type" $ do
-      runStateT (return 'a') (1::Int) `shouldBe` Just ('a', 1)
-      runStateT (return 'a') (1::Int) `shouldBe` (Right ('a', 1) :: Either Int (Char, Int))
+  it "StateT whatever m type" $ do
+    runStateT (return 'a') (1::Int) `shouldBe` Just ('a', 1)
+    runStateT (return 'a') (1::Int) `shouldBe` (Right ('a', 1) :: Either Int (Char, Int))

@@ -20,7 +20,6 @@ server _ respond = do
 
 spec :: SpecWith ()
 spec = do
-  describe "wai" $ do
-    it "sub" $ do
-      1 `shouldBe` 1
-      -- run 8080 app `shouldBe` 
+  it "sub" $ do
+    1 `shouldBe` 1
+    -- run 8080 app `shouldBe` 

@@ -21,8 +21,8 @@ rightNoWildCard firstName lastName = Person firstName lastName
 rightWildCard :: String -> String -> Person
 rightWildCard firstName lastName = Person {..}
 
-specRecordWildCards :: SpecWith ()
-specRecordWildCards = do
+recordWildCardsSpec :: SpecWith ()
+recordWildCardsSpec = do
   it "RecordWildCards" $ do
     leftNoWildCard (Person "Zichao" "Liu") `shouldBe` "Zichao Liu"
     leftWildCard (Person "Zichao" "Liu") `shouldBe` "Zichao Liu"
@@ -31,5 +31,4 @@ specRecordWildCards = do
 
 spec :: SpecWith ()
 spec = do
-  describe "LanguageExtensionSpec" $ do
-    specRecordWildCards
+  recordWildCardsSpec

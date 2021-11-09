@@ -31,8 +31,8 @@ tomAndJerry = do
   j <- jerry
   return (t ++ "\n" ++ j)
 
-specTomAndJerry :: SpecWith ()
-specTomAndJerry = do
+tomAndJerrySpec :: SpecWith ()
+tomAndJerrySpec = do
   it "Tom And Jerry" $ do
     runReader tomAndJerry (Ask "Who's there? ") `shouldBe`
       "Who's there? This is Tom.\nWho's there? This is Jerry."
@@ -44,5 +44,4 @@ specTomAndJerry = do
 
 spec :: SpecWith ()
 spec = do
-  describe "Reader Spec" $ do
-    specTomAndJerry
+  tomAndJerrySpec

@@ -5,72 +5,87 @@ import Data.Char
 import Control.Monad
 import Control.Applicative
 
-specEraseDo :: Maybe String
-specEraseDo = do
+eraseDoSpec1 :: Maybe String
+eraseDoSpec1 = do
   a <- Just 1
   b <- Just 2
   Just "Nonsense"
   c <- Just 3
   return $ show (a + b + c)
 
-specEraseDo' :: Maybe String
-specEraseDo' = do {
+eraseDoSpec2 :: Maybe String
+eraseDoSpec2 = do {
   a <- Just 1;
   b <- Just 2;
   Just "Nonsense";
   c <- Just 3;
   return $ show (a + b + c) }
 
-specEraseDo'' :: Maybe String
-specEraseDo'' =
+eraseDoSpec3 :: Maybe String
+eraseDoSpec3 =
   Just 1 >>= \a ->
   Just 2 >>= \b ->
   Just "Nonesense" >>
   Just 3 >>= \c ->
   return $ show (a + b + c)
 
-specDontNeedDo :: Maybe String
-specDontNeedDo = do Just "a"
+eraseDoSepc :: SpecWith ()
+eraseDoSepc = do
+  it "Erase Do" $ do
+    eraseDoSpec1 `shouldBe` Just "6"
+    eraseDoSpec2 `shouldBe` Just "6"
+    eraseDoSpec3 `shouldBe` Just "6"
 
-specDontNeedDo' :: Maybe String
-specDontNeedDo' = Just "a"
+----------------------------------------------------------------------------------------------------
 
-specNeedDo :: Maybe String
-specNeedDo = do
+dontNeedDoSpec1 :: Maybe String
+dontNeedDoSpec1 = do Just "a"
+
+dontNeedDoSpec2 :: Maybe String
+dontNeedDoSpec2 = Just "a"
+
+dontNeedDoSpec :: SpecWith ()
+dontNeedDoSpec = do
+  it "Dont Need Do" $ do
+    dontNeedDoSpec1 `shouldBe` Just "a"
+    dontNeedDoSpec2 `shouldBe` Just "a"
+
+----------------------------------------------------------------------------------------------------
+
+needDoSpec1 :: Maybe String
+needDoSpec1 = do
   Just "a"
   Just "b"
   Just "c"
 
-specNeedDo' :: Maybe String
-specNeedDo' = do {
+needDoSpec2 :: Maybe String
+needDoSpec2 = do {
   Just "a";
   Just "b";
   Just "c";}
 
-specNeedDo'' :: Maybe String
-specNeedDo'' =
+needDoSpec3 :: Maybe String
+needDoSpec3 =
   Just "a"
 
-specNeedDo''' :: Maybe String
-specNeedDo''' =
+needDoSpec4 :: Maybe String
+needDoSpec4 =
   Just "a" >>
   Just "b" >>
   Just "c"
 
+needDoSpec :: SpecWith ()
+needDoSpec = do
+  it "Need Do" $ do
+    needDoSpec1 `shouldBe` Just "c"
+    needDoSpec2 `shouldBe` Just "c"
+    needDoSpec3 `shouldBe` Just "a"
+    needDoSpec4 `shouldBe` Just "c"
+
+----------------------------------------------------------------------------------------------------
+
 spec::SpecWith()
-spec =
-  describe "DoSpec" $ do
-    it "Erase Do" $ do
-      specEraseDo `shouldBe` Just "6"
-      specEraseDo' `shouldBe` Just "6"
-      specEraseDo'' `shouldBe` Just "6"
-
-    it "Dont Need Do" $ do
-      specDontNeedDo `shouldBe` Just "a"
-      specDontNeedDo' `shouldBe` Just "a"
-
-    it "Need Do" $ do
-      specNeedDo `shouldBe` Just "c"
-      specNeedDo' `shouldBe` Just "c"
-      specNeedDo'' `shouldBe` Just "a"
-      specNeedDo''' `shouldBe` Just "c"
+spec = do
+  eraseDoSepc
+  dontNeedDoSpec
+  needDoSpec

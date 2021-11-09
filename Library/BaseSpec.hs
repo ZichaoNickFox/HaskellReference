@@ -71,19 +71,18 @@ ioRefSpec = do
     show v `shouldBe` "1"
     v <- atomicModifyIORef r (\x -> (x, x + 10))
     show v `shouldBe` "11"
-    
+
 ----------------------------------------------------------------------------------------------------
 
 systemEnvironmentSpec :: SpecWith ()
 systemEnvironmentSpec = do
-  describe "System.Environment" $ do
-    it "environment interfaces" $ do
-      setEnv "TestHaskellEnv" "version0.1"
-      getEnv "TestHaskellEnv" >>= (\s -> s `shouldBe` "version0.1")
-      lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` (Just "version0.1"))
-      unsetEnv "TestHaskellEnv"
-      -- getEnv "TestHaskellEnv" CRASH
-      lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` Nothing)
+  it "environment interfaces" $ do
+    setEnv "TestHaskellEnv" "version0.1"
+    getEnv "TestHaskellEnv" >>= (\s -> s `shouldBe` "version0.1")
+    lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` (Just "version0.1"))
+    unsetEnv "TestHaskellEnv"
+    -- getEnv "TestHaskellEnv" CRASH
+    lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` Nothing)
 
 ----------------------------------------------------------------------------------------------------
 

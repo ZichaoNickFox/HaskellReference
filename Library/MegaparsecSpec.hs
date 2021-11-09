@@ -31,8 +31,8 @@ shouldParseAsWhat result () =
 
 ----------------------------------------------------------------------------------------------------
 
-specParserFromSatisfy :: SpecWith()
-specParserFromSatisfy = do
+parserFromSatisfySpec :: SpecWith()
+parserFromSatisfySpec = do
   it "Parser from satisfy" $ do
     parse (satisfy (=='a')::Parsec Void Text Char) "" "a" `shouldParseAs` 'a'
     parse (satisfy (=='b')::Parsec Void Text Char) "" "a" `shouldParseAs` unlines [
@@ -52,8 +52,8 @@ specParserFromSatisfy = do
 
 ----------------------------------------------------------------------------------------------------
 
-specParserFromString :: SpecWith()
-specParserFromString = do
+parserFromStringSpec :: SpecWith()
+parserFromStringSpec = do
   it "Parser from string, strings'" $ do
     parse (string "hello"::Parsec Void Text Text) "" "hello" `shouldParseAs` "hello"
     parse (string "hello"::Parsec Void Text Text) "" "world" `shouldParseAs` unlines [
@@ -74,8 +74,8 @@ specParserFromString = do
 
 ----------------------------------------------------------------------------------------------------
     
-specParserFromChar :: SpecWith()
-specParserFromChar = do
+parserFromCharSpec :: SpecWith()
+parserFromCharSpec = do
   it "Parser from char" $ do
     parse (mySequence1 :: Parsec Void Text (Char, Char, Char)) "" "abc" `shouldParseAs` ('a', 'b', 'c')
     parse (mySequence1' :: Parsec Void Text (Char, Char, Char)) "" "abc" `shouldParseAs` ('a', 'b', 'c')
@@ -132,8 +132,8 @@ mySequence2'' =
 
 ----------------------------------------------------------------------------------------------------
 
-specParserFromMany :: SpecWith ()
-specParserFromMany = do
+parserFromManySpec :: SpecWith ()
+parserFromManySpec = do
   it "Parser from many" $ do
     parse (many (char 'a') :: Parsec Void Text [Char]) "" "aaaa" `shouldParseAs` "aaaa"
     parse (many (char 'a') :: Parsec Void Text [Char]) "" "aabb" `shouldParseAs` "aa"
@@ -148,8 +148,8 @@ specParserFromMany = do
 
 ----------------------------------------------------------------------------------------------------
 
-specParserFromChoice :: SpecWith ()
-specParserFromChoice = do
+parserFromChoiceSpec :: SpecWith ()
+parserFromChoiceSpec = do
   it "Parser from <|>, choice, <$" $ do
     parse parserFromChoice "" "file" `shouldParseAs` "file"
     parse parserFromChoice "" "irc" `shouldParseAs` "irc"
@@ -206,16 +206,16 @@ alternatives = try foo <|> bar
     foo = (,) <$> char 'a' <*> char 'b'
     bar = (,) <$> char 'a' <*> char 'c'
 
-specParserFromAlternatives :: SpecWith ()
-specParserFromAlternatives = do
+parserFromAlternativesSpec :: SpecWith ()
+parserFromAlternativesSpec = do
   it "Parser from alternatives" $ do
     parse alternatives "" "ab" `shouldParseAs` ('a', 'b')
     parse alternatives "" "ac" `shouldParseAs` ('a', 'c')
   
 ----------------------------------------------------------------------------------------------------
 
-specParserFromUri :: SpecWith ()
-specParserFromUri = doSpecParserFromUri
+parserFromUriSpec :: SpecWith ()
+parserFromUriSpec = doSpecParserFromUri
 
 data Scheme =
   SchemeData |
@@ -321,8 +321,8 @@ parserFromUriHint = do
   return Uri {..}
 
 -- TODO: Not same with tutorial
-specParserFromUriHint :: SpecWith ()
-specParserFromUriHint = do
+parserFromUriHintSpec :: SpecWith ()
+parserFromUriHintSpec = do
   it "Parser from Uri Without Hint" $ do
     parse (parserFromUriHint <* eof) "" "https://mark:@example.com" `shouldParseAsWhat` () --unlines [
       -- "1:13:",
@@ -344,14 +344,13 @@ specParserFromUriHint = do
 
 spec::SpecWith()
 spec = do
-  describe "MegaparsecSpec" $ do
-    specParserFromSatisfy
-    specParserFromString      
-    specParserFromChar
-    specParserFromMany
-    specParserFromChoice 
-    specParserFromAlternatives
-    
-    specParserFromUri
+  parserFromSatisfySpec
+  parserFromStringSpec
+  parserFromCharSpec
+  parserFromManySpec
+  parserFromChoiceSpec
+  parserFromAlternativesSpec
+  
+  parserFromUriSpec
 
-    -- specParserFromUriHint
+  -- specParserFromUriHint

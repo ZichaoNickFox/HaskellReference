@@ -15,5 +15,4 @@ mockFileSystemSpec = do
 
 spec :: SpecWith ()
 spec = do
-  describe "Unit Test Spec" $ do
-    mockFileSystemSpec
+  mockFileSystemSpec

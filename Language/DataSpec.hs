@@ -14,5 +14,4 @@ listSpec = do
 
 spec :: SpecWith ()
 spec = do
-  describe "DataSpec" $ do
-    listSpec
+  listSpec

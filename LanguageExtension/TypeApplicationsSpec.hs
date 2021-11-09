@@ -6,8 +6,6 @@ import Test.Hspec
 
 spec :: SpecWith ()
 spec = do
-  describe "TypeApplications" $ do
-
     -- https://www.haskellforall.com/2015/10/polymorphism-for-dummies.html
     it "read" $ do
       (read "12" :: Int) `shouldBe` 12

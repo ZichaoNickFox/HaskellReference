@@ -56,34 +56,33 @@ execState st s = snd $ runState st s
 
 spec :: SpecWith ()
 spec = do
-  describe "StateSpec" $ do
-    it "return' : set value" $ do
-      runState (return 'a') 1 `shouldBe` ('a', 1)
+  it "return' : set value" $ do
+    runState (return 'a') 1 `shouldBe` ('a', 1)
 
-    it "get : set value, state same" $ do
-      runState get 'a' `shouldBe` ('a', 'a')
+  it "get : set value, state same" $ do
+    runState get 'a' `shouldBe` ('a', 'a')
+  
+  it "put : set value (), set state" $ do
+    runState (put 5) 1 `shouldBe` ((), 5)
+
+  it "modify : set value (), modify state" $ do
+    runState (modify (+10)) 1 `shouldBe` ((), 11)
+
+  it "gets : get, modify value, set state" $ do
+    runState (gets (+10)) 1 `shouldBe` (11, 1)
+
+  it "evalState : take value" $ do
+    evalState (gets (+10)) 1 `shouldBe` 11
+
+  it "execState : take state" $ do
+    execState (gets (+10)) 1 `shouldBe` 1
+  
+  it "combination" $ do
+    runState (do {put 5; return 'a'}) 1 `shouldBe` ('a', 5)
+    runState (put 5  >> return 'a') 1 `shouldBe` ('a', 5)
+
+    runState (get >>= \x -> put (x + 1) >> return x) 1 `shouldBe` (1, 2)
+
+    runState (do {x <- get; put (x - 1); get}) 1 `shouldBe` (0, 0)
     
-    it "put : set value (), set state" $ do
-      runState (put 5) 1 `shouldBe` ((), 5)
-
-    it "modify : set value (), modify state" $ do
-      runState (modify (+10)) 1 `shouldBe` ((), 11)
-
-    it "gets : get, modify value, set state" $ do
-      runState (gets (+10)) 1 `shouldBe` (11, 1)
-
-    it "evalState : take value" $ do
-      evalState (gets (+10)) 1 `shouldBe` 11
-
-    it "execState : take state" $ do
-      execState (gets (+10)) 1 `shouldBe` 1
-    
-    it "combination" $ do
-      runState (do {put 5; return 'a'}) 1 `shouldBe` ('a', 5)
-      runState (put 5  >> return 'a') 1 `shouldBe` ('a', 5)
-
-      runState (get >>= \x -> put (x + 1) >> return x) 1 `shouldBe` (1, 2)
-
-      runState (do {x <- get; put (x - 1); get}) 1 `shouldBe` (0, 0)
-      
-      runState (do {get; return "a"; return "b"}) 1 `shouldBe` ("b", 1)
+    runState (do {get; return "a"; return "b"}) 1 `shouldBe` ("b", 1)

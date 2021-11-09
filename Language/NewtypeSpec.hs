@@ -14,11 +14,10 @@ newtype AppBaseUrl = AppBaseUrl Text deriving (Show, Eq)
 
 spec :: SpecWith ()
 spec = do
-  describe "newtype spec" $ do
-    it "newtype" $ do
-      Age 1 `shouldBe` Age 1
-      (Param (Left 1 :: Either Int String)) `shouldBe` (Param (Left 1 :: Either Int String))
-      Record 2021 `shouldBe` Record 2021
-      AppHostName "nickfox" `shouldBe` AppHostName "nickfox"
-      AppPort 8080 `shouldBe` AppPort 8080
-      AppBaseUrl "127.0.0.1" `shouldBe` AppBaseUrl "127.0.0.1"
+  it "newtype" $ do
+    Age 1 `shouldBe` Age 1
+    (Param (Left 1 :: Either Int String)) `shouldBe` (Param (Left 1 :: Either Int String))
+    Record 2021 `shouldBe` Record 2021
+    AppHostName "nickfox" `shouldBe` AppHostName "nickfox"
+    AppPort 8080 `shouldBe` AppPort 8080
+    AppBaseUrl "127.0.0.1" `shouldBe` AppBaseUrl "127.0.0.1"
