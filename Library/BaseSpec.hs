@@ -1,9 +1,11 @@
+{-# LANGUAGE DeriveDataTypeable #-}
 module Library.BaseSpec where
 
 import Test.Hspec
 import Data.Char
 import Data.Either
 import Data.IORef
+import Data.Typeable
 import Control.Monad
 import Control.Applicative
 import System.Environment
@@ -86,6 +88,23 @@ systemEnvironmentSpec = do
 
 ----------------------------------------------------------------------------------------------------
 
+data Person = Person { name :: String, age :: Int } deriving (Typeable)
+
+zichaoLiu :: Person
+zichaoLiu = Person "Zichao Liu" 30
+
+typeableSpec :: SpecWith ()
+typeableSpec = do
+  it "typeable spec" $ do
+    let typeRep = typeOf (undefined :: Person) in typeRep `shouldBe` typeOf zichaoLiu
+    let showTypeRep = show $ typeOf zichaoLiu in showTypeRep `shouldBe` "Person"
+    let showTypeRepCon = show $ typeRepTyCon $ typeOf zichaoLiu in showTypeRepCon `shouldBe` "Person"
+    (tyConName $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Person"
+    (tyConModule $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Library.BaseSpec"
+    (tyConPackage $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "main"
+
+----------------------------------------------------------------------------------------------------
+
 -- controlMonadSpec :: SpecWith ()
 -- controlMonadSpec = do
 --   describe "Control.Monad" $ do
@@ -99,6 +118,7 @@ spec = do
   dataTupleSpec
   ioRefSpec
   systemEnvironmentSpec
+  typeableSpec
   -- controlMonadSpec
   
     

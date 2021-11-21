@@ -8,6 +8,7 @@ let
     p.http-types
     p.wai
     p.vault
+    p.split
   ]);
 in
 pkgs.mkShell {
