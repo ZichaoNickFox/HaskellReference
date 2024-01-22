@@ -1,13 +1,13 @@
+{-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TypeApplications #-}
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeApplications  #-}
 
 module Library.TypeRepMapSpec (spec) where
 
-import Data.TMap
-import Prelude hiding (lookup)
-import Test.Hspec
-import Util
+import           Data.TMap
+import           Prelude    hiding (lookup)
+import           Test.Hspec
+import           Util
 
 spec :: SpecWith ()
 spec = do
@@ -24,13 +24,13 @@ spec = do
     (lookup @Int (insert True $ one @Int 2021)) `shouldBe` (Just 2021)
     (lookup @Bool (insert True $ one @Int 2021)) `shouldBe` (Just True)
     (lookup @String (insert True $ one @Int 2021)) `shouldBe` Nothing
-  
+
   it "member" $ do
     -- member :: forall a . Typeable a => TMap -> Bool
     (member @Int (insert True $ one @Int 2021)) `shouldBe` True
     (member @Bool (insert True $ one @Int 2021)) `shouldBe` True
     (member @String (insert True $ one @Int 2021)) `shouldBe` False
-  
+
   it "empty" $ do
     -- empty :: TMap
     size empty `shouldBe` 0
@@ -38,7 +38,10 @@ spec = do
   it "one" $ do
     -- one :: forall a . a -> TMap
     lookup @Int (one @Int 2021) `shouldBe` Just 2021
-  
+
   it "delete" $ do
     -- delete :: forall a. Typeable a => TMap -> TMap
     (size $ delete @Int $ one @Int 2021) `shouldBe` 0
+
+main :: IO ()
+main = hspec spec

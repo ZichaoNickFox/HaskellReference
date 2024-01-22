@@ -1,9 +1,9 @@
 module Library.VaultSpec (spec) where
 
-import Data.Vault.Lazy as Vault
-import Pattern.StateTSpec hiding (spec)
-import Test.Hspec
-import Util
+import           Data.Vault.Lazy    as Vault
+import           Pattern.StateTSpec hiding (spec)
+import           Test.Hspec
+import           Util
 
 vaultSpec :: SpecWith ()
 vaultSpec = do
@@ -48,5 +48,8 @@ vaultInRecordSpec = do
 
 spec :: SpecWith ()
 spec = do
-  vaultSpec  
+  vaultSpec
   vaultInRecordSpec
+
+main :: IO ()
+main = hspec spec

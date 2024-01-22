@@ -1,10 +1,10 @@
 module Pattern.WriterSpec (spec) where
 
-import Util (shouldBeWhat)
-import Control.Monad
-import Data.Functor.Identity
-import Prelude hiding (log)
-import Test.Hspec
+import           Control.Monad
+import           Data.Functor.Identity
+import           Prelude               hiding (log)
+import           Test.Hspec
+import           Util                  (shouldBeWhat)
 
 newtype Writer w a = Writer { runWriter :: (a, w) } deriving (Show, Eq)
 
@@ -68,7 +68,7 @@ logSpec = do
 
   it "censor" $ do
     runWriter censorSpec `shouldBe` ((), ["good", "excellent", "soso", "good"])
-  
+
   it "fmap" $ do
     fmap (nextYear) tellSpec `shouldBe` Writer (Year 2022,"log Year 1998, log Year 2015, log Year 2021")
 
@@ -82,3 +82,6 @@ logSpec = do
 spec :: SpecWith ()
 spec = do
   logSpec
+
+main :: IO ()
+main = hspec spec

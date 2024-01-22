@@ -2,11 +2,11 @@
 
 module Library.WaiSpec (spec) where
 
-import Network.Wai
-import Network.HTTP.Types
+import           Network.HTTP.Types
+import           Network.Wai
 -- import Network.Wai.Handler.Warp (run)
 
-import Test.Hspec
+import           Test.Hspec
 
 -- https://hackage.haskell.org/package/wai
 -- Application :: Request -> (Response -> IO ResponseReceived) -> IO ResponseReceived
@@ -22,4 +22,7 @@ spec :: SpecWith ()
 spec = do
   it "sub" $ do
     1 `shouldBe` 1
-    -- run 8080 app `shouldBe` 
+    -- run 8080 app `shouldBe`
+
+main :: IO ()
+main = hspec spec

@@ -1,5 +1,5 @@
+{-# LANGUAGE InstanceSigs        #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE InstanceSigs #-}
 
 module Pattern.StateTSpec (
   spec,
@@ -13,11 +13,11 @@ module Pattern.StateTSpec (
   runStateT
 ) where
 
-import Control.Arrow
-import Control.Monad
-import Data.Functor
-import Prelude
-import Test.Hspec
+import           Control.Arrow
+import           Control.Monad
+import           Data.Functor
+import           Prelude
+import           Test.Hspec
 
 newtype StateT s m a = StateT { runStateT :: s -> m (a,s) }
 
@@ -66,7 +66,7 @@ spec = do
 
   it "getT : set value, state same" $ do
     runStateT getT 'a' `shouldBe` Just ('a', 'a')
-  
+
   it "putT : set value (), set state" $ do
     runStateT (putT 5) 1 `shouldBe` Just ((), 5)
 
@@ -81,7 +81,7 @@ spec = do
 
   it "execStateT : take state" $ do
     execStateT (getsT (+10)) 1 `shouldBe` Just 1
-  
+
   it "combination" $ do
     runStateT (do {putT 5; return 'a'}) 1 `shouldBe` Just ('a', 5)
     runStateT (putT 5  >> return 'a') 1 `shouldBe` Just ('a', 5)
@@ -92,3 +92,6 @@ spec = do
   it "StateT whatever m type" $ do
     runStateT (return 'a') (1::Int) `shouldBe` Just ('a', 1)
     runStateT (return 'a') (1::Int) `shouldBe` (Right ('a', 1) :: Either Int (Char, Int))
+
+main :: IO ()
+main = hspec spec

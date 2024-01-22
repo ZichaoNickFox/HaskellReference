@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  ghc = pkgs.haskell.packages.ghc884.ghcWithPackages (p: [
+  ghc = pkgs.haskell.packages.ghc963.ghcWithPackages (p: [
     p.hspec
     p.megaparsec
     p.text

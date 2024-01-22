@@ -3,8 +3,8 @@
 
 module LanguageExtension.RankNTypesSpec (spec) where
 
-import Test.Hspec
-import Util
+import           Test.Hspec
+import           Util
 
 intDoublePolymorphic :: (forall n. Num n => n -> n) -> (Int, Double)
 intDoublePolymorphic f = (f 1, f 1.0)
@@ -28,3 +28,6 @@ intDoublePolymorphicSpec = do
 spec :: SpecWith ()
 spec = do
   intDoublePolymorphicSpec
+
+main :: IO ()
+main = hspec spec

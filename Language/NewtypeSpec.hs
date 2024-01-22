@@ -2,8 +2,8 @@
 
 module Language.NewtypeSpec (spec) where
 
-import Data.Text
-import Test.Hspec
+import           Data.Text
+import           Test.Hspec
 
 newtype Age = Age Int deriving (Show, Eq)
 newtype Param a b = Param (Either a b) deriving (Show, Eq)
@@ -21,3 +21,6 @@ spec = do
     AppHostName "nickfox" `shouldBe` AppHostName "nickfox"
     AppPort 8080 `shouldBe` AppPort 8080
     AppBaseUrl "127.0.0.1" `shouldBe` AppBaseUrl "127.0.0.1"
+
+main :: IO ()
+main = hspec spec

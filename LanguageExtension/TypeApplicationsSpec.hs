@@ -2,7 +2,7 @@
 
 module LanguageExtension.TypeApplicationsSpec (spec) where
 
-import Test.Hspec
+import           Test.Hspec
 
 spec :: SpecWith ()
 spec = do
@@ -13,3 +13,6 @@ spec = do
 
     it "[]" $ do
       2 : ([] @Int) `shouldBe` [2]
+
+main :: IO ()
+main = hspec spec

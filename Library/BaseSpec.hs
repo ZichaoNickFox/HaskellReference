@@ -1,19 +1,19 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 module Library.BaseSpec where
 
-import Test.Hspec
-import Data.Char
-import Data.Either
-import Data.IORef
-import Data.Typeable
-import Control.Monad
-import Control.Applicative
-import System.Environment
+import           Control.Applicative
+import           Control.Monad
+import           Data.Char
+import           Data.Either
+import           Data.IORef
+import           Data.Typeable
+import           System.Environment
+import           Test.Hspec
 
 preludeSpec :: SpecWith ()
 preludeSpec = do
   it "Prelude" $ do
-    flip (++) "hello" "world" `shouldBe` "worldhello" 
+    flip (++) "hello" "world" `shouldBe` "worldhello"
     flip (/) 3 6 `shouldBe` 2
 
     unlines ["a"] `shouldBe` "a\n"
@@ -34,12 +34,12 @@ preludeSpec = do
 
     unless False (Just ()) `shouldBe` (Just ())
     unless True (Just ()) `shouldBe` (return ())
-    
+
     void (Just 1) `shouldBe` (Just ())
     void Nothing `shouldBe` Nothing
 
     (read "12" :: Int) `shouldBe` 12
-    
+
     readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "Hello World")
 
     writeFile "Data/Test.txt" "ABC"
@@ -120,5 +120,6 @@ spec = do
   systemEnvironmentSpec
   typeableSpec
   -- controlMonadSpec
-  
-    
+
+main :: IO ()
+main = hspec spec

@@ -1,19 +1,19 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RecordWildCards     #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Library.MegaparsecSpec (spec) where
 
 import qualified Control.Applicative
-import Control.Monad
-import Data.Text (pack)
-import Data.Text.Internal ( Text )
-import Data.Void ( Void )
-import Text.Megaparsec hiding (optional)
-import Text.Megaparsec.Char
-import Text.Megaparsec.Char.Lexer
-import Text.Megaparsec.Debug
-import Test.Hspec
+import           Control.Monad
+import           Data.Text                  (pack)
+import           Data.Text.Internal         (Text)
+import           Data.Void                  (Void)
+import           Test.Hspec
+import           Text.Megaparsec            hiding (optional)
+import           Text.Megaparsec.Char
+import           Text.Megaparsec.Char.Lexer
+import           Text.Megaparsec.Debug
 
 shouldParseAs :: (VisualStream s, TraversableStream s, ShowErrorComponent e, Show a, Show b) =>
   Either (ParseErrorBundle s e) a -> b -> Expectation
@@ -26,7 +26,7 @@ shouldParseAsWhat :: (VisualStream s, TraversableStream s, ShowErrorComponent e,
   Either (ParseErrorBundle s e) a -> () -> IO()
 shouldParseAsWhat result () =
   case result of
-    Left e -> print $ errorBundlePretty e
+    Left e  -> print $ errorBundlePretty e
     Right a -> print a
 
 ----------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ parserFromStringSpec = do
     parse (string' "hEllO"::Parsec Void Text Text) "" "hello" `shouldParseAs` "hello"
 
 ----------------------------------------------------------------------------------------------------
-    
+
 parserFromCharSpec :: SpecWith()
 parserFromCharSpec = do
   it "Parser from char" $ do
@@ -197,7 +197,7 @@ parserFromChoice' = (choice::[Parsec Void Text Text]->Parsec Void Text Text) [
   string "http",
   string "irc",
   string "mailto" ]
-  
+
 ----------------------------------------------------------------------------------------------------
 
 alternatives :: Parsec Void Text (Char, Char)
@@ -211,7 +211,7 @@ parserFromAlternativesSpec = do
   it "Parser from alternatives" $ do
     parse alternatives "" "ab" `shouldParseAs` ('a', 'b')
     parse alternatives "" "ac" `shouldParseAs` ('a', 'c')
-  
+
 ----------------------------------------------------------------------------------------------------
 
 parserFromUriSpec :: SpecWith ()
@@ -237,7 +237,7 @@ parserFromScheme = choice [
   SchemeMailto <$ string "mailto" ]
 
 data Uri = Uri {
-  uriScheme :: Scheme,
+  uriScheme    :: Scheme,
   uriAuthority :: Maybe Authority
   } deriving (Eq, Show)
 
@@ -284,7 +284,7 @@ doSpecParserFromUri = do
           authUser = Just ("mark", "secret"),
           authHost = "example.com",
           authPort = Just 123 } ) }
-    
+
     parse (parserFromUri <* eof) "" "https://example.com:123" `shouldParseAs`
       Uri {
         uriScheme = SchemeHttps,
@@ -292,7 +292,7 @@ doSpecParserFromUri = do
           authUser = Nothing,
           authHost = "example.com",
           authPort = Just 123 } ) }
-    
+
     parse (parserFromUri <* eof) "" "https://mark@example.com" `shouldParseAs` unlines [
       "1:13:",
       "  |",
@@ -339,7 +339,7 @@ parserFromUriHintSpec = do
       -- "  |             ^",
       -- "unexpected '@'",
       -- "expecting password" ]
-  
+
 ----------------------------------------------------------------------------------------------------
 
 spec::SpecWith()
@@ -350,7 +350,10 @@ spec = do
   parserFromManySpec
   parserFromChoiceSpec
   parserFromAlternativesSpec
-  
+
   parserFromUriSpec
 
   -- specParserFromUriHint
+
+main :: IO ()
+main = hspec spec

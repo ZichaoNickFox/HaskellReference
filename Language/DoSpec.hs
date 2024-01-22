@@ -1,9 +1,9 @@
 module Language.DoSpec (spec) where
 
-import Test.Hspec
-import Data.Char
-import Control.Monad
-import Control.Applicative
+import           Control.Applicative
+import           Control.Monad
+import           Data.Char
+import           Test.Hspec
 
 eraseDoSpec1 :: Maybe String
 eraseDoSpec1 = do
@@ -89,3 +89,6 @@ spec = do
   eraseDoSepc
   dontNeedDoSpec
   needDoSpec
+
+main :: IO ()
+main = hspec spec

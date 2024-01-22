@@ -1,6 +1,6 @@
 module Language.MonadUnitTestSpec (spec) where
 
-import Test.Hspec
+import           Test.Hspec
 
 -- To test function
 charNumInFile :: FilePath -> IO Int
@@ -16,3 +16,6 @@ mockFileSystemSpec = do
 spec :: SpecWith ()
 spec = do
   mockFileSystemSpec
+
+main :: IO ()
+main = hspec spec

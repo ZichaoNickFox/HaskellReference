@@ -2,11 +2,11 @@
 
 module LanguageExtension.RecordWildCardsSpec (spec) where
 
-import Test.Hspec
+import           Test.Hspec
 
 data Person = Person {
   firstName :: String,
-  lastName :: String
+  lastName  :: String
 } deriving (Show, Eq)
 
 leftNoWildCard :: Person -> String
@@ -32,3 +32,6 @@ recordWildCardsSpec = do
 spec :: SpecWith ()
 spec = do
   recordWildCardsSpec
+
+main :: IO ()
+main = hspec spec

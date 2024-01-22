@@ -1,12 +1,12 @@
+{-# LANGUAGE InstanceSigs        #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE InstanceSigs #-}
 
 module Pattern.StateSpec (spec) where
 
-import Control.Monad
-import Data.Functor
-import Prelude
-import Test.Hspec
+import           Control.Monad
+import           Data.Functor
+import           Prelude
+import           Test.Hspec
 
 newtype State s a = State { runState :: s -> (a,s) }
 
@@ -22,7 +22,7 @@ instance Applicative (State s) where
                               in (f a, s2))
   pure :: a -> State s a
   pure a = State (\s -> (a, s))
-  
+
 instance Monad (State s) where
   (>>) :: (State s a) -> (State s b) -> (State s b)
   (>>) st1 st2 = State (\s -> let (a, s1) = runState st1 s
@@ -61,7 +61,7 @@ spec = do
 
   it "get : set value, state same" $ do
     runState get 'a' `shouldBe` ('a', 'a')
-  
+
   it "put : set value (), set state" $ do
     runState (put 5) 1 `shouldBe` ((), 5)
 
@@ -76,7 +76,7 @@ spec = do
 
   it "execState : take state" $ do
     execState (gets (+10)) 1 `shouldBe` 1
-  
+
   it "combination" $ do
     runState (do {put 5; return 'a'}) 1 `shouldBe` ('a', 5)
     runState (put 5  >> return 'a') 1 `shouldBe` ('a', 5)
@@ -84,5 +84,8 @@ spec = do
     runState (get >>= \x -> put (x + 1) >> return x) 1 `shouldBe` (1, 2)
 
     runState (do {x <- get; put (x - 1); get}) 1 `shouldBe` (0, 0)
-    
+
     runState (do {get; return "a"; return "b"}) 1 `shouldBe` ("b", 1)
+
+main :: IO ()
+main = hspec spec

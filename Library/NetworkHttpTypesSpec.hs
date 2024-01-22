@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Library.NetworkHttpTypesSpec (spec) where
 
-import Network.HTTP.Types.Status
-import Test.Hspec
+import           Network.HTTP.Types.Status
+import           Test.Hspec
 
 spec :: SpecWith ()
 spec = do
@@ -11,3 +11,6 @@ spec = do
     statusMessage status200 `shouldBe` "OK"
     toEnum 200 `shouldBe` status200
     fromEnum status200 `shouldBe` 200
+
+main :: IO ()
+main = hspec spec

@@ -1,9 +1,9 @@
 module Pattern.ReaderSpec (spec) where
 
-import Test.Hspec
-import Control.Monad.Reader
-import Data.Functor
-import Data.Functor.Identity
+import           Control.Monad.Reader
+import           Data.Functor
+import           Data.Functor.Identity
+import           Test.Hspec
 
 -- newtype Reader r a = Reader { runReader :: a } deriving (Show, Eq)
 
@@ -36,7 +36,7 @@ tomAndJerrySpec = do
   it "Tom And Jerry" $ do
     runReader tomAndJerry (Ask "Who's there? ") `shouldBe`
       "Who's there? This is Tom.\nWho's there? This is Jerry."
-  
+
   -- it "fmap" $ do
   --   fmap (++ " asked") (ReaderT (Ask "Who's there?") Identity) `shouldBe` ReaderT (Ask "Who's there? asked") Identity
 
@@ -45,3 +45,6 @@ tomAndJerrySpec = do
 spec :: SpecWith ()
 spec = do
   tomAndJerrySpec
+
+main :: IO ()
+main = hspec spec

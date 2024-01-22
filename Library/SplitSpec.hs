@@ -1,8 +1,8 @@
 module Library.SplitSpec (spec) where
 
-import Data.List.Split
-import Test.Hspec
-import Util
+import           Data.List.Split
+import           Test.Hspec
+import           Util
 
 splitSpec :: SpecWith ()
 splitSpec = do
@@ -12,3 +12,6 @@ splitSpec = do
 spec :: SpecWith ()
 spec = do
   splitSpec
+
+main :: IO ()
+main = hspec spec

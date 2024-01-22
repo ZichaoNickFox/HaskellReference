@@ -1,7 +1,7 @@
 module Language.DataSpec (spec) where
 
-import Prelude
-import Test.Hspec
+import           Prelude
+import           Test.Hspec
 
 data List a = Nil | a :. List a deriving (Show, Eq)
 
@@ -15,3 +15,6 @@ listSpec = do
 spec :: SpecWith ()
 spec = do
   listSpec
+
+main :: IO ()
+main = hspec spec

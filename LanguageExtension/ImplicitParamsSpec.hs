@@ -2,9 +2,9 @@
 
 module LanguageExtension.ImplicitParamsSpec (spec) where
 
-import qualified Data.List as L
-import Test.Hspec
-import Util
+import qualified Data.List  as L
+import           Test.Hspec
+import           Util
 
 -- https://www.haskell.org/hugs/pages/users_guide/implicit-parameters.html
 sortBy :: (a -> a -> Ordering) -> [a] -> [a]
@@ -24,3 +24,6 @@ sortSpec = do
 spec :: SpecWith ()
 spec = do
   sortSpec
+
+main :: IO ()
+main = hspec spec

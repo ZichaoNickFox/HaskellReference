@@ -1,7 +1,7 @@
 module LanguageExtension.OverloadedLabelsSpec (spec) where
 
-import Test.Hspec
-import Util
+import           Test.Hspec
+import           Util
 
 sub1Spec :: SpecWith ()
 sub1Spec = do
@@ -21,3 +21,6 @@ spec :: SpecWith ()
 spec = do
   sub1Spec
   sub2Spec
+
+main :: IO ()
+main = hspec spec
