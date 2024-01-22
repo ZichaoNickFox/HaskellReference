@@ -9,6 +9,8 @@ let
     p.wai
     p.vault
     p.split
+    p.lens
+    p.wavefrontOBJ
   ]);
 in
 pkgs.mkShell {

@@ -1,4 +1,4 @@
-module Library.GHCExtSpec (spec) where
+module Package.GHCExtSpec (spec) where
 
 import           Test.Hspec
 

@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE TypeApplications  #-}
 
-module Library.TypeRepMapSpec (spec) where
+module Package.TypeRepMapSpec (spec) where
 
 import           Data.TMap
 import           Prelude    hiding (lookup)

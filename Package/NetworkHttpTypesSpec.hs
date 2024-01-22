@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Library.NetworkHttpTypesSpec (spec) where
+module Package.NetworkHttpTypesSpec (spec) where
 
 import           Network.HTTP.Types.Status
 import           Test.Hspec

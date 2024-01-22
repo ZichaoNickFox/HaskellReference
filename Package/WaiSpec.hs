@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Library.WaiSpec (spec) where
+module Package.WaiSpec (spec) where
 
 import           Network.HTTP.Types
 import           Network.Wai

@@ -1,5 +1,5 @@
 {-# LANGUAGE DeriveDataTypeable #-}
-module Library.BaseSpec where
+module Package.BaseSpec where
 
 import           Control.Applicative
 import           Control.Monad
@@ -99,9 +99,9 @@ typeableSpec = do
     let typeRep = typeOf (undefined :: Person) in typeRep `shouldBe` typeOf zichaoLiu
     let showTypeRep = show $ typeOf zichaoLiu in showTypeRep `shouldBe` "Person"
     let showTypeRepCon = show $ typeRepTyCon $ typeOf zichaoLiu in showTypeRepCon `shouldBe` "Person"
-    (tyConName $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Person"
-    (tyConModule $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Library.BaseSpec"
-    (tyConPackage $ typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "main"
+    tyConName (typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Person"
+    tyConModule (typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Package.BaseSpec"
+    tyConPackage (typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "main"
 
 ----------------------------------------------------------------------------------------------------
 
@@ -109,7 +109,6 @@ typeableSpec = do
 -- controlMonadSpec = do
 --   describe "Control.Monad" $ do
 --     it "liftIO" $ do
-
 
 spec::SpecWith ()
 spec = do

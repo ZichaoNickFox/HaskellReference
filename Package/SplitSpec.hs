@@ -1,4 +1,4 @@
-module Library.SplitSpec (spec) where
+module Package.SplitSpec (spec) where
 
 import           Data.List.Split
 import           Test.Hspec

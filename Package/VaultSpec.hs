@@ -1,4 +1,4 @@
-module Library.VaultSpec (spec) where
+module Package.VaultSpec (spec) where
 
 import           Data.Vault.Lazy    as Vault
 import           Pattern.StateTSpec hiding (spec)
