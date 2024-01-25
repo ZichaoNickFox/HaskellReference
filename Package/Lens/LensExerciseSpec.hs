@@ -1,11 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
 
-module Package.LensSpec.LensExerciseSpec where
+module Package.Lens.LensExerciseSpec where
 
 import           Control.Lens
 import           Control.Lens.TH
-import qualified Data.Text       as T
+import           Control.Monad.Identity (Identity (runIdentity))
+import qualified Data.Text              as T
 import           Test.Hspec
 
 -- https://williamyaoh.com/posts/2019-04-25-lens-exercises.html
@@ -196,13 +197,66 @@ lensIIISpec = do
         }
       })
 
-type Lens s t a b = forall f. Functor f => (a -> f b) -> s -> f t
+-- // LINK Package/BaseSpec.hs#Identity
+infixr 4 .~.~
+(.~.~) :: ((a -> Identity b) -> s -> Identity t) -> b -> s -> t
+(.~.~) l b s = runIdentity $ l (\_ -> Identity b) s
+
+infixr 4 %~%~
+(%~%~) :: ((a -> Identity b) -> s -> Identity t) -> (a -> b) -> s -> t
+(%~%~) l f s = runIdentity $ l (Identity . f) s
+
+-- // LINK Package/BaseSpec.hs#Const
+infixl 8 ^.^.
+(^.^.) :: s -> ((a -> Const a b) -> s -> Const a t) -> a
+(^.^.) s l = getConst $ l Const s
+
+name' :: Functor f => (T.Text -> f T.Text) -> User -> f User
+name' f u = (\n -> u{_name = n}) <$> f (_name u)
+
+lensIVSpec :: SpecWith ()
+lensIVSpec = do
+  it "IV.1" $ do
+    (.~.~) _1 "hello" (1, 2) `shouldBe` ("hello", 2)
+    (.~.~) _2 "world" (1, 2) `shouldBe` (1, "world")
+  it "IV.2" $ do
+    (%~%~) _1 (+1) (1, 2) `shouldBe` (2, 2)
+    (%~%~) _2 show (1, 2) `shouldBe` (1, "2")
+  it "IV.3" $ do
+    (^.^.) (1, 2) _1 `shouldBe` 1
+    (^.^.) (1, 2) _2 `shouldBe` 2
+  it "IV.4" $ do
+    (.~.~) name' "liu.zichao" user1 `shouldBe`
+      User
+        { _name = "liu.zichao"
+        , _userid = 103
+        , _metadata = UserInfo
+          { _numLogins = 20
+          , _associatedIPs =
+            [ "52.39.193.61"
+            , "52.39.193.75"
+            ]
+          }
+        }
+    (%~%~) name' T.toUpper user1 `shouldBe`
+      User
+        { _name = "QIAO.YIFAN"
+        , _userid = 103
+        , _metadata = UserInfo
+          { _numLogins = 20
+          , _associatedIPs =
+            [ "52.39.193.61"
+            , "52.39.193.75"
+            ]
+          }
+        }
 
 lensExerciseSpec :: SpecWith ()
 lensExerciseSpec = do
   lensISpec
   lensIISpec
   lensIIISpec
+  lensIVSpec
 
 main :: IO ()
 main = hspec lensExerciseSpec

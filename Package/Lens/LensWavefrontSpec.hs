@@ -1,4 +1,4 @@
-module Package.Lens.LensWavefrontOBJSpec where
+module Package.Lens.LensWavefrontSpec where
 
 import           Codec.Wavefront
 import           Codec.Wavefront.IO
@@ -18,7 +18,7 @@ faceElements :: Vector (Element Face) -> [Element Face]
 faceElements fv = fv ^.. folded
 
 faces :: [Element Face] -> [Face]
-faces efs = over mapped elValue efs
+faces = over mapped elValue
 
 temp :: IO ()
 temp = do
@@ -29,5 +29,5 @@ temp = do
 -- wavefrontTestList :: SpecWith ()
 -- wavefrontTestList = do
 
-lensSpec :: SpecWith ()
-lensSpec = it ""
+wavefrontSpec :: SpecWith ()
+wavefrontSpec = it ""

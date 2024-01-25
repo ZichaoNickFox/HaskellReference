@@ -5,6 +5,8 @@ import           Control.Applicative
 import           Control.Monad
 import           Data.Char
 import           Data.Either
+import           Data.Functor.Const
+import           Data.Functor.Identity
 import           Data.IORef
 import           Data.Typeable
 import           System.Environment
@@ -45,8 +47,6 @@ preludeSpec = do
     writeFile "Data/Test.txt" "ABC"
     >> readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "ABC")
     >> writeFile "Data/Test.txt" "Hello World"
-
-----------------------------------------------------------------------------------------------------
 
 dataEitherSpec :: SpecWith ()
 dataEitherSpec = do
@@ -110,6 +110,18 @@ typeableSpec = do
 --   describe "Control.Monad" $ do
 --     it "liftIO" $ do
 
+-- // ANCHOR[id=Identity] Identity
+-- Identity is a functor satisfied : f <$> Identity a = Identity (f a)
+identitySpec :: SpecWith ()
+identitySpec = do
+  it "Identity" $ fmap (+1) (runIdentity 1) `shouldBe` Identity 2
+
+-- // ANCHOR[id=Const] Const
+-- Const is a functor satisfied : f <$> Const a = Const a
+constSpec :: SpecWith ()
+constSpec = do
+  it "Const" $ fmap (+1) (Const 1) `shouldBe` Const 1
+
 spec::SpecWith ()
 spec = do
   preludeSpec
@@ -119,6 +131,8 @@ spec = do
   systemEnvironmentSpec
   typeableSpec
   -- controlMonadSpec
+  identitySpec
+  constSpec
 
 main :: IO ()
 main = hspec spec
