@@ -10,6 +10,9 @@ let
     p.vault
     p.split
     p.lens
+    p.lens-aeson
+    p.aeson
+    p.aeson-qq
   ]);
 in
 pkgs.mkShell {
