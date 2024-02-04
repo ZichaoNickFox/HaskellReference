@@ -37,9 +37,9 @@ lensSpec = do
   it "(^..)" $ ([[1, 2], [3]] ^.. id) `shouldBe` [[[1, 2], [3]]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse) `shouldBe` [[1, 2], [3]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse . traverse) `shouldBe` [1, 2, 3]
-  it "(^?)" $ (Left 4 ^? _Left) `shouldBe` (Just 4)
+  it "(^?)" $ (Left 4 ^? _Left) `shouldBe` Just 4
   it "(^?)" $ (Right 4 ^? _Left :: Maybe Int) `shouldBe` Nothing
-  it "(^?)" $ ("world" ^? ix 3) `shouldBe` (Just 'l')
+  it "(^?)" $ ("world" ^? ix 3) `shouldBe` Just 'l'
   it "(^?)" $ ("world" ^? ix 10) `shouldBe` Nothing
   it "(^?!)" $ (Left 4 ^?! _Left) `shouldBe` 4
   it "(^?!)" $ ("world" ^?! ix 3) `shouldBe` 'l'
@@ -56,6 +56,8 @@ lensSpec = do
   -- TestCase $ assertEqual "foldMapOf" (foldMapOf  sum [1, 2, 3] :: Int) 18
 
   --Control.Lens.Getter
+  it "(^.)" $ ("hello", "world") ^. _2 `shouldBe` "world"
+  it "(^.)" $ (1, 2) ^. _1 `shouldBe` 1
   it "(^..)" $ ((1, 2, 3, 4, 5) ^.. (_1 <> _3 <> _5)) `shouldBe` [1, 3, 5]
 
   it "allOf" $ allOf (folded . folded) isLower ["hello", "world"] `shouldBe` True
