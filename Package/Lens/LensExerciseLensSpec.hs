@@ -212,7 +212,7 @@ infixl 8 ^.^.
 (^.^.) s l = getConst $ l Const s
 
 name' :: Functor f => (T.Text -> f T.Text) -> User -> f User
-name' f u = (\n -> u{_name = n}) <$> f (_name u)
+name' g u = (\n -> u{_name = n}) <$> g (_name u)
 
 lensIVSpec :: SpecWith ()
 lensIVSpec = do

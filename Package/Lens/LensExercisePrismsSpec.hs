@@ -1,15 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE QuasiQuotes       #-}
 
 module Package.Lens.LensExercisePrismsSpec where
 
 import           Control.Lens
 import           Control.Lens.TH
 import           Control.Monad.Identity (Identity (runIdentity))
+import           Data.Aeson.Lens
+import           Data.Aeson.QQ
+import           Data.Monoid
 import qualified Data.Text              as T
 import           Test.Hspec
-import Data.Aeson.QQ
-import Data.Aeson.Lens
 
 -- https://williamyaoh.com/posts/2019-04-25-lens-exercises.html
 
@@ -67,7 +68,7 @@ prismsISpec = do
 prismsIISpec :: SpecWith ()
 prismsIISpec = do
   it "^?" $ user2 ^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
-  it ".~" $ (user1 & key "metadata".key "num_logins"._Integer .~ 25) `shouldBe` 
+  it ".~" $ (user1 & key "metadata".key "num_logins"._Integer .~ 25) `shouldBe`
     [aesonQQ|
       {
         "name": "qiao.yifan",
@@ -97,13 +98,16 @@ prismsIISpec = do
 type Prism s t a b = forall f. Applicative f => (a -> f b) -> s -> f t
 -- type Lens s t a b = forall f. Applicative f => (a -> f b) -> s -> f t
 
--- infixl 8 ^?
--- (^?^?) :: s -> ((a -> Const (First b)) -> s -> Const (First t)) -> Maybe a
--- (^?^?) s f = 
+-- infixl 8 ^?^?
+-- // LINK Package/BaseSpec.hs#First
+-- (^?^?) :: s -> ((a -> Const (First a) b) -> s -> Const (First a) t) -> Maybe a
+-- (^?^?) s l = getConst $ l g s
+--   where g (Just a) = Const (First a) a
+--         g Nothing  = Const mempty
 
-prismsIIISpec :: SpecWith ()
-prismsIIISpec = do
-  it "^?^?" $ user2 ^?^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
+-- prismsIIISpec :: SpecWith ()
+-- prismsIIISpec = do
+--   it "^?^?" $ user2 ^?^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
 
 lensExercisePrismsSpec :: SpecWith ()
 lensExercisePrismsSpec = do

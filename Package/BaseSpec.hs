@@ -8,7 +8,12 @@ import           Data.Either
 import           Data.Functor.Const
 import           Data.Functor.Identity
 import           Data.IORef
+
+import           Data.Monoid                           as Monoid
+import           Data.Semigroup                        as Semigroup
 import           Data.Typeable
+import           Distribution.PackageDescription.Check (CheckPackageContentOps (doesFileExist))
+import           Distribution.Simple.Utils             (doesExecutableExist)
 import           System.Environment
 import           Test.Hspec
 
@@ -122,6 +127,29 @@ constSpec :: SpecWith ()
 constSpec = do
   it "Const" $ fmap (+1) (Const 1) `shouldBe` Const 1
 
+monoidSpec :: SpecWith ()
+monoidSpec = do
+  describe "monoid" $ do
+    it "Alt" $ Alt (Just 12) <> Alt (Just 24) `shouldBe` Alt (Just 12)
+    it "Alt" $ Alt Nothing <> Alt (Just 12) `shouldBe` Alt (Just 12)
+
+-- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Semigroup.html
+semigroupSpec :: SpecWith ()
+semigroupSpec = do
+  describe "semigroup" $ do
+    it "array" $ [1, 2, 3] <> [4, 5, 6] `shouldBe` [1, 2, 3, 4, 5, 6]
+    it "Min" $ Min 1 <> Min 2 <> Min 3 `shouldBe` Min 1
+  -- // ANCHOR[id=First] First
+    it "First" $ Semigroup.First Nothing <> Semigroup.First (Just 1) `shouldBe` Semigroup.First Nothing
+    it "Last" $ Semigroup.Last Nothing <> Semigroup.Last (Just 1) `shouldBe` Semigroup.Last (Just 1)
+    it "Dual" $ Dual "hello" <> Dual "world" `shouldBe` Dual "worldhello"
+    -- it "Endo" TODO:
+    it "All" $ All True <> All False `shouldBe` All False
+    it "Any" $ Any True <> Any False `shouldBe` Any True
+    it "Sum" $ Sum 1 <> Sum 2 <> mempty `shouldBe` Sum 3
+    it "Product" $ Product 2 <> Product 3 `shouldBe` Product 6
+    -- it "diff" TODO:
+
 spec::SpecWith ()
 spec = do
   preludeSpec
@@ -133,6 +161,8 @@ spec = do
   -- controlMonadSpec
   identitySpec
   constSpec
+  monoidSpec
+  semigroupSpec
 
 main :: IO ()
 main = hspec spec
