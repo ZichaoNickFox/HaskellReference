@@ -101,8 +101,7 @@ type Prism s t a b = forall f. Applicative f => (a -> f b) -> s -> f t
 infixl 8 ^?^?
 -- // LINK Package/BaseSpec.hs#First
 (^?^?) :: s -> ((a -> Const (First a) b) -> s -> Const (First a) t) -> Maybe a
-(^?^?) s l = getFirst $ getConst $ l g s
-              where g a = (Const . First . Just) a
+(^?^?) s l = getFirst $ getConst $ l (Const . First . Just) s
 
 -- _Just :: Applicative f => (a -> f b) -> Maybe a -> f (Maybe b)
 -- _Just g a =

@@ -1,0 +1,109 @@
+name:                HGraphics
+version:             0.1.0.0
+github:              "githubuser/HGraphics"
+license:             BSD-3-Clause
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2023 Author name here"
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/HGraphics#readme>
+
+library:
+  source-dirs: src
+  default-extensions:
+  - OverloadedRecordDot
+  - DuplicateRecordFields
+  - FlexibleInstances
+  - FlexibleContexts
+  dependencies:
+  - vector
+  - JuicyPixels
+  - wavefront
+  - data-default
+  - lens
+
+dependencies:
+- base
+
+executables:
+  sdltriangle:
+    main:                Main.hs
+    source-dirs:         app/sdltriangle
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    - -Wcompat
+    - -Widentities
+    - -Wincomplete-record-updates
+    - -Wincomplete-uni-patterns
+    - -Wmissing-export-lists
+    - -Wmissing-home-modules
+    - -Wpartial-fields
+    - -Wredundant-constraints
+    dependencies:
+    - base
+    - bytestring
+    - extra
+    - managed
+    - say
+    - sdl2
+    - text
+    - transformers
+    - vector
+    - vulkan
+    - vulkan-utils
+    - lens
+    default-extensions:
+    - LambdaCase
+    - RecordWildCards
+    - DataKinds
+    - OverloadedRecordDot
+    - DisambiguateRecordFields
+    - DuplicateRecordFields
+    - OverloadedStrings
+    - FlexibleContexts
+    - GADTs
+    - NoMonomorphismRestriction
+
+  tinyrenderer:
+    main:                Main.hs
+    source-dirs:         app/tinyrenderer
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - base
+    - HGraphics
+    - vector
+    default-extensions:
+    - OverloadedRecordDot
+    - FlexibleContexts
+    - DuplicateRecordFields
+    
+tests:
+  HGraphics-test:
+    main:                Main.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    default-extensions:
+    - OverloadedRecordDot
+    - RankNTypes
+    dependencies:
+    - base
+    - HUnit
+    - HGraphics
+    - lens
+    - data-default
+    - wavefront
+    - vector
+    - text

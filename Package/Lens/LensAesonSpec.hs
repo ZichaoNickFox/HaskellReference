@@ -4,12 +4,12 @@ module Package.Lens.LensAesonSpec where
 
 import           Control.Lens
 import           Data.Aeson
+import qualified Data.Aeson.KeyMap as KeyMap
 import           Data.Aeson.Lens
 import           Data.String
+import qualified Data.Vector       as Vector
 import           Test.Hspec
-import qualified Data.Aeson.KeyMap as KeyMap
-import Util 
-import qualified Data.Vector as Vector
+import           Util
 
 numbersSpec :: SpecWith ()
 numbersSpec = do

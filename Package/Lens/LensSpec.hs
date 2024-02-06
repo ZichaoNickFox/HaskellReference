@@ -1,10 +1,10 @@
 module Package.Lens.LensSpec where
 
 import           Control.Lens
+import           Control.Lens.Combinators
 import           Data.Char
 import           Data.Data.Lens
 import           Data.Text.Lens
-import Control.Lens.Combinators
 import           Test.Hspec
 
 -- Lenses, Folds, and Traversals

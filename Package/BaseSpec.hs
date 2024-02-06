@@ -2,13 +2,14 @@
 module Package.BaseSpec where
 
 import           Control.Applicative
+import           Control.Exception
 import           Control.Monad
 import           Data.Char
 import           Data.Either
 import           Data.Functor.Const
 import           Data.Functor.Identity
 import           Data.IORef
-
+import           Data.Maybe
 import           Data.Monoid                           as Monoid
 import           Data.Semigroup                        as Semigroup
 import           Data.Typeable
@@ -16,6 +17,7 @@ import           Distribution.PackageDescription.Check (CheckPackageContentOps (
 import           Distribution.Simple.Utils             (doesExecutableExist)
 import           System.Environment
 import           Test.Hspec
+import           Text.Read
 
 preludeSpec :: SpecWith ()
 preludeSpec = do
@@ -52,6 +54,31 @@ preludeSpec = do
     writeFile "Data/Test.txt" "ABC"
     >> readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "ABC")
     >> writeFile "Data/Test.txt" "Hello World"
+
+maybeSpec :: SpecWith ()
+maybeSpec = do
+  it "readMaybe" $ (readMaybe "1" :: Maybe Int) `shouldBe` Just 1
+  it "readMaybe" $ (readMaybe "zichao" :: Maybe Int) `shouldBe` Nothing
+  it "maybe" $ maybe 2 (+1) (Just 3) `shouldBe` 4
+  it "maybe" $ maybe 2 (+1) Nothing `shouldBe` 2
+  it "maybe + readMaybe" $ maybe 0 (+1) (readMaybe "2" :: Maybe Int) `shouldBe` 3
+  it "maybe + readMaybe" $ maybe 0 (+1) (readMaybe "" :: Maybe Int) `shouldBe` 0
+  it "maybe + readMaybe" $ maybe "" show (Just 5) `shouldBe` "5"
+  it "maybe + readMaybe" $ maybe "" (show :: Int -> String) Nothing `shouldBe` ""
+  it "isJust" $ isJust (Just 1) `shouldBe` True
+  it "isJust" $ isJust (Just Nothing) `shouldBe` True
+  it "isJust" $ isJust Nothing `shouldBe` False
+  it "isNothing" $ isNothing (Just ()) `shouldBe` False
+  it "isNothing" $ isNothing Nothing `shouldBe` True
+  it "fromJust" $ fromJust (Just 1) `shouldBe` 1
+  it "fromJust" $ evaluate (fromJust Nothing) `shouldThrow` anyErrorCall
+  it "fromMaybe" $ fromMaybe "" (Just "hello") `shouldBe` "hello"
+  it "fromMaybe" $ fromMaybe "world" Nothing `shouldBe` "world"
+  it "fromMaybe + readMaybe" $ fromMaybe 0 (readMaybe "") `shouldBe` 0
+  it "fromMaybe + readMaybe" $ fromMaybe 0 (readMaybe "1") `shouldBe` 1
+  it "listToMaybe" $ listToMaybe [] `shouldBe` (Nothing :: Maybe Int)
+  it "listToMaybe" $ listToMaybe [1] `shouldBe` Just 1
+  it "listToMaybe" $ listToMaybe [1, 2, 3] `shouldBe` Just 1
 
 dataEitherSpec :: SpecWith ()
 dataEitherSpec = do
@@ -153,6 +180,7 @@ semigroupSpec = do
 spec::SpecWith ()
 spec = do
   preludeSpec
+  maybeSpec
   dataEitherSpec
   dataTupleSpec
   ioRefSpec
