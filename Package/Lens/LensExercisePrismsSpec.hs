@@ -98,22 +98,26 @@ prismsIISpec = do
 type Prism s t a b = forall f. Applicative f => (a -> f b) -> s -> f t
 -- type Lens s t a b = forall f. Applicative f => (a -> f b) -> s -> f t
 
--- infixl 8 ^?^?
+infixl 8 ^?^?
 -- // LINK Package/BaseSpec.hs#First
--- (^?^?) :: s -> ((a -> Const (First a) b) -> s -> Const (First a) t) -> Maybe a
--- (^?^?) s l = getConst $ l g s
---   where g (Just a) = Const (First a) a
---         g Nothing  = Const mempty
+(^?^?) :: s -> ((a -> Const (First a) b) -> s -> Const (First a) t) -> Maybe a
+(^?^?) s l = getFirst $ getConst $ l g s
+              where g a = (Const . First . Just) a
 
--- prismsIIISpec :: SpecWith ()
--- prismsIIISpec = do
---   it "^?^?" $ user2 ^?^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
+-- _Just :: Applicative f => (a -> f b) -> Maybe a -> f (Maybe b)
+-- _Just g a =
+
+prismsIIISpec :: SpecWith ()
+prismsIIISpec = do
+  it "^?^?" $ user2 ^?^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
+  it "^?^?" $ user2 ^?^? key "metadata_null".key "num_logins"._Integer `shouldBe` Nothing
+  -- it "^?^?" $ user2 ^?^? key "metadata_null".key "num_logins"._Integer._Just `shouldBe` 27
 
 lensExercisePrismsSpec :: SpecWith ()
 lensExercisePrismsSpec = do
   prismsISpec
   prismsIISpec
-  -- prismsIIISpec
+  prismsIIISpec
 
 main :: IO ()
 main = hspec lensExercisePrismsSpec

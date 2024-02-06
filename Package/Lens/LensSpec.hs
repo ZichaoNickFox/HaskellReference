@@ -4,12 +4,13 @@ import           Control.Lens
 import           Data.Char
 import           Data.Data.Lens
 import           Data.Text.Lens
+import Control.Lens.Combinators
 import           Test.Hspec
 
-lensSpec :: SpecWith ()
-lensSpec = do
-  -- Lenses, Folds, and Traversals
-  -- https://www.youtube.com/watch?v=cefnmjtAolY
+-- Lenses, Folds, and Traversals
+-- https://www.youtube.com/watch?v=cefnmjtAolY
+videoSpec :: SpecWith ()
+videoSpec = do
   it "fmap . fmap" $ (fmap . fmap) (+1) [[1, 2, 3]] `shouldBe` [[2, 3, 4]]
   it "fmap . fmap . fmap" $ (fmap . fmap . fmap) (+1) [[[1, 2, 3]]] `shouldBe` [[[2, 3, 4]]]
   it "fmap . fmap . fmap" $ (fmap . fmap . fmap) (+1) [[[1, 2, 3]], [[4, 5, 6], [7, 8, 9]]] `shouldBe` [[[2, 3, 4]], [[5, 6, 7], [8, 9, 10]]]
@@ -17,6 +18,8 @@ lensSpec = do
   -- fmap law : fmap (f.g) = (fmap g) . (fmap f)
   it "fmap law" $ fmap ((+1) . (+2)) [1, 2, 3] `shouldBe` fmap (+2) (fmap (+1) [1, 2, 3])
 
+getterSpec :: SpecWith ()
+getterSpec = do
   -- get
   it "get : ^." $ (("hello", "world") ^._2) `shouldBe` "world"
   it "get : ^." $ (("hello", ("world", "!!!")) ^. (_2 . _1)) `shouldBe` "world"
@@ -65,6 +68,8 @@ lensSpec = do
 
   it "from to" $ ("hello" ^. from packed . to length) `shouldBe` 5
 
+setterSpec :: SpecWith ()
+setterSpec = do
   -- Control.Lens.Setter 不改变结构，但可能改变类型
   it "over traverse" $ over traverse length ["hello", "world"] `shouldBe` [5, 5]
   it "over _1" $ over _1 length ("hello", "world") `shouldBe` (5, "world")
@@ -87,6 +92,18 @@ lensSpec = do
 
   -- Control.Lens.Traversal
 
+combinatorSpec :: SpecWith ()
+combinatorSpec = do
+  -- traverse :: (a -> f b) -> t a -> f (t b)
+  it "traverse Just" $ traverse Just [1, 2, 3] `shouldBe` Just [1, 2, 3]
+  it "traverse id" $ traverse id [Right 1, Right 2, Right 3] `shouldBe` (Right [1, 2, 3] :: Either Int [Int])
+
 spec::SpecWith ()
 spec = do
-  lensSpec
+  videoSpec
+  getterSpec
+  setterSpec
+  combinatorSpec
+
+main :: IO ()
+main = hspec spec
