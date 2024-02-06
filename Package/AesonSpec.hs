@@ -10,7 +10,7 @@ import           Data.Aeson
 import           Data.Aeson.KeyMap
 import           Data.Aeson.Types
 import qualified Data.Map          as Map
-import           Data.Text
+import           Data.Tet
 import           GHC.Generics
 import           Test.Hspec
 import           Text.Parsec       (parse)
