@@ -63,6 +63,7 @@ foldTraversalISpec = do
       Object (KeyMap.fromList [("email",String "smucheng@xingxin.com"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "SU.MUCHENG")])]))])
   it "_Array" $ (users ^..key "users".values.key "metadata".key "associated_ips"._Array) `shouldBe` [Vector.fromList [String "52.49.1.233", String "52.49.1.234"], Vector.fromList [String "51.2.244.193"]]
   it "values" $ (users ^..key "users".values.key "metadata".key "associated_ips".values._String) `shouldBe` ["52.49.1.233", "52.49.1.234", "51.2.244.193"]
+  it users & foldlOf (key "users".values.key "metadata".key "num_logins"._Integer) (+) 0 `shouldBe` 32
 
 lensExerciseFoldTraversalSpec :: SpecWith ()
 lensExerciseFoldTraversalSpec = do
