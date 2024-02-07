@@ -48,8 +48,8 @@ objectAndArraySpec = do
 
 spec :: SpecWith ()
 spec = do
-  numbersSpec
-  objectAndArraySpec
+  describe "numbersSpec" numbersSpec
+  describe "objectAndArraySpec" objectAndArraySpec
 
 main :: IO ()
 main = hspec spec

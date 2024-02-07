@@ -253,10 +253,10 @@ lensIVSpec = do
 
 lensExerciseLensSpec :: SpecWith ()
 lensExerciseLensSpec = do
-  lensISpec
-  lensIISpec
-  lensIIISpec
-  lensIVSpec
+  describe "lensISpec" lensISpec
+  describe "lensIISpec" lensIISpec
+  describe "lensIIISpec" lensIIISpec
+  describe "lensIVSpec" lensIVSpec
 
 main :: IO ()
 main = hspec lensExerciseLensSpec

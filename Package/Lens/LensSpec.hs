@@ -7,6 +7,9 @@ import           Data.Data.Lens
 import           Data.Text.Lens
 import           Test.Hspec
 
+-- Github
+-- https://github.com/ekmett/lens?tab=readme-ov-file#field-guide
+
 -- Lenses, Folds, and Traversals
 -- https://www.youtube.com/watch?v=cefnmjtAolY
 videoSpec :: SpecWith ()
@@ -36,7 +39,7 @@ getterSpec = do
   it "both" $ over both (+1) (1, 2) `shouldBe` (2, 3)
   it "over not work in tuple" $ over mapped (*2) (1, 2, 3) `shouldBe` (1, 2, 6)
 
-  -- Control.Lens.Fold 可以改变结构
+  -- Control.Lens.Fold 可以重新组织结构，不能改变原值，多个值
   it "(^..)" $ ([[1, 2], [3]] ^.. id) `shouldBe` [[[1, 2], [3]]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse) `shouldBe` [[1, 2], [3]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse . traverse) `shouldBe` [1, 2, 3]
@@ -92,18 +95,40 @@ setterSpec = do
 
   -- Control.Lens.Traversal
 
+-- https://hackage.haskell.org/package/lens-5.2.3/docs/Control-Lens-Combinators.html#v:_Just
 combinatorSpec :: SpecWith ()
 combinatorSpec = do
   -- traverse :: (a -> f b) -> t a -> f (t b)
-  it "traverse Just" $ traverse Just [1, 2, 3] `shouldBe` Just [1, 2, 3]
-  it "traverse id" $ traverse id [Right 1, Right 2, Right 3] `shouldBe` (Right [1, 2, 3] :: Either Int [Int])
+  it "traverse" $ traverse Just [1, 2, 3] `shouldBe` Just [1, 2, 3]
+  it "traverse" $ traverse ((+1)<$>) [Right 1, Right 2, Right 3] `shouldBe` (Right [2, 3, 4] :: Either Int [Int])
+  it "traverse" $ traverse id [Right 1, Left 2, Right 3, Left 4] `shouldBe` Left 2
+  it "bimap" $ bimap toUpper (+1) ('z', 33) `shouldBe` ('Z', 34)
+  it "bimap" $ bimap toUpper (+1) (Left 'z') `shouldBe` Left 'Z'
+  it "bimap" $ bimap toUpper (+1) (Right 33) `shouldBe` Right 34
+  it "foldMapBy" $ foldMapBy (+) 0 length ["hello", "world"] `shouldBe` 10
+  it "foldBy" $ foldBy (++) "" ["hello", "world"] `shouldBe` "helloworld"
+  it "ifolded withIndex" $ [10, 20, 30] ^.. ifolded . withIndex `shouldBe` [(0, 10), (1, 20), (2, 30)]
+  let nat :: Prism' Integer Int
+      nat = prism toInteger $ \ i -> if i < 0 then Left i else Right (fromInteger i)
+  it "prism" $ 5 ^? nat `shouldBe` Just (5 :: Int)
+  it "prism" $ (-5) ^? nat `shouldBe` Nothing 
+  it "prism" $ ((-3, 4) & both . nat *~ 2) `shouldBe` (-3, 8)
+  it "prism" $ 5 ^. re nat `shouldBe` 5
+  -- TODO: before _Just
+  it "_Just" $ over _Just (+1) (Just 2) `shouldBe` Just 3
+  it "_Just" $ _Just # 5 `shouldBe` Just 5
+  it "_Just" $ 5 ^. re _Just `shouldBe` Just 5
+  it "_Just" $ Just 1 ^? _Just `shouldBe` Just 1
+  it "_Just" $ Nothing ^? _Just `shouldBe` (Nothing :: Maybe Int)
+  it "_Just" $ Just LT ^. _Just `shouldBe` LT
+  -- TODO: after _Just
 
 spec::SpecWith ()
 spec = do
-  videoSpec
-  getterSpec
-  setterSpec
-  combinatorSpec
+  describe "videoSpec" videoSpec
+  describe "getterSpec" getterSpec
+  describe "setterSpec" setterSpec
+  describe "combinatorSpec" combinatorSpec
 
 main :: IO ()
 main = hspec spec

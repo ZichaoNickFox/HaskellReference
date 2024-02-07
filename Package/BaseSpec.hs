@@ -55,6 +55,7 @@ preludeSpec = do
     >> readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "ABC")
     >> writeFile "Data/Test.txt" "Hello World"
 
+-- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Maybe.html
 maybeSpec :: SpecWith ()
 maybeSpec = do
   it "readMaybe" $ (readMaybe "1" :: Maybe Int) `shouldBe` Just 1
@@ -79,6 +80,11 @@ maybeSpec = do
   it "listToMaybe" $ listToMaybe [] `shouldBe` (Nothing :: Maybe Int)
   it "listToMaybe" $ listToMaybe [1] `shouldBe` Just 1
   it "listToMaybe" $ listToMaybe [1, 2, 3] `shouldBe` Just 1
+  it "maybeToList" $ maybeToList (Just 1) `shouldBe` [1]
+  it "maybeToList" $ maybeToList (Just [1, 2]) `shouldBe` [[1, 2]]
+  it "maybeToList" $ maybeToList Nothing `shouldBe` ([] :: [Int])
+  it "catMaybes" $ catMaybes [Just 1, Nothing, Just 3] `shouldBe` [1, 3]
+  it "mapMaybe" $ mapMaybe id [Just 1, Nothing] `shouldBe` [1]
 
 dataEitherSpec :: SpecWith ()
 dataEitherSpec = do
@@ -156,41 +162,39 @@ constSpec = do
 
 monoidSpec :: SpecWith ()
 monoidSpec = do
-  describe "monoid" $ do
-    it "Alt" $ Alt (Just 12) <> Alt (Just 24) `shouldBe` Alt (Just 12)
-    it "Alt" $ Alt Nothing <> Alt (Just 12) `shouldBe` Alt (Just 12)
+  it "Alt" $ Alt (Just 12) <> Alt (Just 24) `shouldBe` Alt (Just 12)
+  it "Alt" $ Alt Nothing <> Alt (Just 12) `shouldBe` Alt (Just 12)
 
 -- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Semigroup.html
 semigroupSpec :: SpecWith ()
 semigroupSpec = do
-  describe "semigroup" $ do
-    it "array" $ [1, 2, 3] <> [4, 5, 6] `shouldBe` [1, 2, 3, 4, 5, 6]
-    it "Min" $ Min 1 <> Min 2 <> Min 3 `shouldBe` Min 1
-  -- // ANCHOR[id=First] First
-    it "First" $ Semigroup.First Nothing <> Semigroup.First (Just 1) `shouldBe` Semigroup.First Nothing
-    it "Last" $ Semigroup.Last Nothing <> Semigroup.Last (Just 1) `shouldBe` Semigroup.Last (Just 1)
-    it "Dual" $ Dual "hello" <> Dual "world" `shouldBe` Dual "worldhello"
-    -- it "Endo" TODO:
-    it "All" $ All True <> All False `shouldBe` All False
-    it "Any" $ Any True <> Any False `shouldBe` Any True
-    it "Sum" $ Sum 1 <> Sum 2 <> mempty `shouldBe` Sum 3
-    it "Product" $ Product 2 <> Product 3 `shouldBe` Product 6
-    -- it "diff" TODO:
+  it "array" $ [1, 2, 3] <> [4, 5, 6] `shouldBe` [1, 2, 3, 4, 5, 6]
+  it "Min" $ Min 1 <> Min 2 <> Min 3 `shouldBe` Min 1
+-- // ANCHOR[id=First] First
+  it "First" $ Semigroup.First Nothing <> Semigroup.First (Just 1) `shouldBe` Semigroup.First Nothing
+  it "Last" $ Semigroup.Last Nothing <> Semigroup.Last (Just 1) `shouldBe` Semigroup.Last (Just 1)
+  it "Dual" $ Dual "hello" <> Dual "world" `shouldBe` Dual "worldhello"
+  -- it "Endo" TODO:
+  it "All" $ All True <> All False `shouldBe` All False
+  it "Any" $ Any True <> Any False `shouldBe` Any True
+  it "Sum" $ Sum 1 <> Sum 2 <> mempty `shouldBe` Sum 3
+  it "Product" $ Product 2 <> Product 3 `shouldBe` Product 6
+  -- it "diff" TODO:
 
 spec::SpecWith ()
 spec = do
-  preludeSpec
-  maybeSpec
-  dataEitherSpec
-  dataTupleSpec
-  ioRefSpec
-  systemEnvironmentSpec
-  typeableSpec
-  -- controlMonadSpec
-  identitySpec
-  constSpec
-  monoidSpec
-  semigroupSpec
+  describe "preludeSpec" preludeSpec
+  describe "maybeSpec" maybeSpec
+  describe "dataEitherSpec" dataEitherSpec
+  describe "dataTupleSpec" dataTupleSpec
+  describe "ioRefSpec" ioRefSpec
+  describe "systemEnvironmentSpec" systemEnvironmentSpec
+  describe "typeableSpec" typeableSpec
+  -- describe "controlMonadSpec" controlMonadSpec
+  describe "identitySpec" identitySpec
+  describe "constSpec" constSpec
+  describe "monoidSpec" monoidSpec
+  describe "semigroupSpec" semigroupSpec
 
 main :: IO ()
 main = hspec spec

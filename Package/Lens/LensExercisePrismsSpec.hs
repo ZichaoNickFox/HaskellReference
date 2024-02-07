@@ -103,20 +103,32 @@ infixl 8 ^?^?
 (^?^?) :: s -> ((a -> Const (First a) b) -> s -> Const (First a) t) -> Maybe a
 (^?^?) s l = getFirst $ getConst $ l (Const . First . Just) s
 
--- _Just :: Applicative f => (a -> f b) -> Maybe a -> f (Maybe b)
--- _Just g a =
+infixr 4 %~%~
+(%~%~) :: ((a -> Identity b) -> s -> Identity t) -> (a -> b) -> s -> t
+(%~%~) l f s = runIdentity $ l (Identity . f) s
+
+-- // LINK Package/BaseSpec.hs#Const
+infixl 8 ^.^.
+(^.^.) :: s -> ((a -> Const a b) -> s -> Const a t) -> a
+(^.^.) s l = getConst $ l Const s
+
+_Just_Just :: Applicative f => (a -> f b) -> Maybe a -> f (Maybe b)
+_Just_Just g (Just a) = Just <$> g a
+_Just_Just g Nothing = pure Nothing
 
 prismsIIISpec :: SpecWith ()
 prismsIIISpec = do
   it "^?^?" $ user2 ^?^? key "metadata".key "num_logins"._Integer `shouldBe` Just 27
   it "^?^?" $ user2 ^?^? key "metadata_null".key "num_logins"._Integer `shouldBe` Nothing
-  -- it "^?^?" $ user2 ^?^? key "metadata_null".key "num_logins"._Integer._Just `shouldBe` 27
+  it "_Just" $ Just LT ^. _Just_Just `shouldBe` LT
+  it "^.^." $ Just LT ^.^. _Just_Just `shouldBe` LT
+  it "%~%~" $ (Just LT & _Just_Just %~%~ show) `shouldBe` Just "LT"
 
 lensExercisePrismsSpec :: SpecWith ()
 lensExercisePrismsSpec = do
-  prismsISpec
-  prismsIISpec
-  prismsIIISpec
+  describe "prismsISpec" prismsISpec
+  describe "prismsIISpec" prismsIISpec
+  describe "prismsIIISpec" prismsIIISpec
 
 main :: IO ()
 main = hspec lensExercisePrismsSpec
