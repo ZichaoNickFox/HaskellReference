@@ -5,8 +5,8 @@ import           Control.Monad
 import           Data.Char
 import           Test.Hspec
 
-eraseDoSepc :: SpecWith ()
-eraseDoSepc = do
+doSpec :: SpecWith ()
+doSpec = do
   it "it + do, let + in" $ do
     let
       eraseDoSpec1 :: Maybe String
@@ -24,15 +24,9 @@ eraseDoSepc = do
         return $ show (a + b)
     in eraseDoSpec2 `shouldBe` Just "3"
 
-dontNeedDoSpec :: SpecWith ()
-dontNeedDoSpec = do
-  it "with do" $ do Just "a" `shouldBe` Just "a"
-  it "without do" $ Just "a" `shouldBe` Just "a"
-
 spec::SpecWith()
 spec = do
-  describe "eraseDoSpec" eraseDoSepc
-  describe "dontNeedDoSpec" dontNeedDoSpec
+  describe "doSpec" doSepc
 
 main :: IO ()
 main = hspec spec
