@@ -15,6 +15,7 @@ import Data.Aeson.Lens
 import Util (shouldBeWhat)
 import qualified Data.Vector as Vector
 import Data.Monoid
+import Data.IORef
 
 -- https://williamyaoh.com/posts/2019-04-25-lens-exercises.html
 
@@ -69,7 +70,41 @@ foldTraversalISpec = do
 
 foldTraversalIISpec :: SpecWith ()
 foldTraversalIISpec = do
-  it "" True
+  it "traverseOf IORef" $ do
+    ref <- newIORef 0
+    users &
+      traverseOf
+        (key "users"
+          ._Array
+          .traversed
+          .key "metadata"
+          .key "num_logins"
+          ._Integer)
+        (\x -> modifyIORef' ref (+x) >> readIORef ref)
+    v <- readIORef ref
+    v `shouldBe` 32
+  it "traverseOf" $ do
+    res <- users &
+            traverseOf
+              (key "users".values.key "email"._String)
+              (\x -> pure (Text.reverse x))
+    res `shouldBe`
+      Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "moc.nixgnix@nafiyq"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "qiao.yifan")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "ye.xiu")]),
+        Object (KeyMap.fromList [("email",String "moc.nixgnix@gnehcums"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "su.mucheng")])]))])
+  it "traverseOf" $ do
+    let getAliasMay "ye.xiu" = Just "ye.qiu"
+    let getAliasMay _        = Nothing
+    res <- users &
+            traverseOf
+              (key "users".values.key "name"._String)
+              getAliasMay
+    res `shouldBe`
+      Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "moc.nixgnix@nafiyq"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "qiao.yifan")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "ye.xiu")]),
+        Object (KeyMap.fromList [("email",String "moc.nixgnix@gnehcums"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "su.mucheng")])]))])
 
 lensExerciseFoldTraversalSpec :: SpecWith ()
 lensExerciseFoldTraversalSpec = do

@@ -92,27 +92,39 @@ dataEitherSpec = do
     (Left 1 :: Either Int String) `shouldBe` (Left 1 :: Either Int String)
     (Right "1" :: Either Int String) `shouldBe` (Right "1" :: Either Int String)
 
-----------------------------------------------------------------------------------------------------
-
 dataTupleSpec :: SpecWith ()
 dataTupleSpec = do
   it "Data.Tuple" $ do
     fst (1, 2) `shouldBe` 1
     snd (1, 2) `shouldBe` 2
 
-----------------------------------------------------------------------------------------------------
-
+-- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-IORef.html
 ioRefSpec :: SpecWith ()
 ioRefSpec = do
-  it "IORef" $ do
-    r <- newIORef 0
+  it "newIORef readIORef" $ do
+    r <- newIORef 0 
+    v <- readIORef r
+    v `shouldBe` 0
+  it "writeIORef" $ do
+    r <- newIORef 0 
     writeIORef r 1
     v <- readIORef r
-    show v `shouldBe` "1"
-    v <- atomicModifyIORef r (\x -> (x, x + 10))
-    show v `shouldBe` "11"
-
-----------------------------------------------------------------------------------------------------
+    v `shouldBe` 1
+  it "atomicWriteIORef" $ do
+    r <- newIORef 0
+    atomicWriteIORef r 2
+    v <- readIORef r
+    v `shouldBe` 2
+  it "modifyIORef" $ do
+    r <- newIORef 0
+    modifyIORef r (+3)
+    v <- readIORef r
+    v `shouldBe` 3
+  it "atomicModifyIORef" $ do
+    r <- newIORef 0
+    atomicModifyIORef r $ \v -> (v + 4, ())
+    v <- readIORef r
+    v `shouldBe` 4
 
 systemEnvironmentSpec :: SpecWith ()
 systemEnvironmentSpec = do
@@ -123,8 +135,6 @@ systemEnvironmentSpec = do
     unsetEnv "TestHaskellEnv"
     -- getEnv "TestHaskellEnv" CRASH
     lookupEnv "TestHaskellEnv" >>= (\m -> m `shouldBe` Nothing)
-
-----------------------------------------------------------------------------------------------------
 
 data Person = Person { name :: String, age :: Int } deriving (Typeable)
 
