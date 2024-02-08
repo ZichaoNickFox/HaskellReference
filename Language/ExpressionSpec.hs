@@ -7,7 +7,7 @@ import           Test.Hspec
 
 doSpec :: SpecWith ()
 doSpec = do
-  it "it + do, let + in" $ do
+  it "it + do, let - in" $ do
     let
       eraseDoSpec1 :: Maybe String
       eraseDoSpec1 = do
@@ -15,7 +15,7 @@ doSpec = do
         b <- Just 2
         return $ show (a + b)
     eraseDoSpec1 `shouldBe` Just "3"
-  it "it - do, let - in" $
+  it "it - do, let + in" $
     let
       eraseDoSpec2 :: Maybe String
       eraseDoSpec2 = do

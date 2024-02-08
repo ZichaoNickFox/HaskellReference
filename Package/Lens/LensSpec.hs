@@ -6,6 +6,7 @@ import           Data.Char
 import           Data.Data.Lens
 import           Data.Text.Lens
 import           Test.Hspec
+import           Util                     (shouldBeWhat)
 
 -- Github
 -- https://github.com/ekmett/lens?tab=readme-ov-file#field-guide
@@ -111,7 +112,7 @@ combinatorSpec = do
   let nat :: Prism' Integer Int
       nat = prism toInteger $ \ i -> if i < 0 then Left i else Right (fromInteger i)
   it "prism" $ 5 ^? nat `shouldBe` Just (5 :: Int)
-  it "prism" $ (-5) ^? nat `shouldBe` Nothing 
+  it "prism" $ (-5) ^? nat `shouldBe` Nothing
   it "prism" $ ((-3, 4) & both . nat *~ 2) `shouldBe` (-3, 8)
   it "prism" $ 5 ^. re nat `shouldBe` 5
   -- TODO: before _Just
@@ -122,6 +123,13 @@ combinatorSpec = do
   it "_Just" $ Nothing ^? _Just `shouldBe` (Nothing :: Maybe Int)
   it "_Just" $ Just LT ^. _Just `shouldBe` LT
   -- TODO: after _Just
+  it "foled" $ Just 3 ^.. folded `shouldBe` [3]
+  it "foled" $ Nothing ^.. folded `shouldBe` ([] :: [Int])
+  it "foled" $ [(1, 2), (3, 4)] ^.. folded `shouldBe` [(1, 2), (3, 4)]
+  it "foled" $ [(1, 2), (3, 4)] ^.. folded.both `shouldBe` [1, 2, 3, 4]
+  it "filtered" $ [1, 2, 3] ^.. folded.filtered even `shouldBe` [2]
+  it "filtered" $ ["hello", "world", "!"] ^.. folded.filtered (\n -> 'h' `elem` n) `shouldBe` ["hello"]
+  it "filtered" $ [(1, 2), (3, 4)] ^.. folded.both.filtered even `shouldBe` [2, 4]
 
 spec::SpecWith ()
 spec = do
