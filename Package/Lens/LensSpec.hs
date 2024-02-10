@@ -22,25 +22,11 @@ videoSpec = do
   -- fmap law : fmap (f.g) = (fmap g) . (fmap f)
   it "fmap law" $ fmap ((+1) . (+2)) [1, 2, 3] `shouldBe` fmap (+2) (fmap (+1) [1, 2, 3])
 
-getterSpec :: SpecWith ()
-getterSpec = do
-  -- get
-  it "get : ^." $ (("hello", "world") ^._2) `shouldBe` "world"
-  it "get : ^." $ (("hello", ("world", "!!!")) ^. (_2 . _1)) `shouldBe` "world"
-  it "get'" $ (("hello", ("world", "!!!")) ^._2 . _1) `shouldBe` "world"
-  it "view" $ view _1 ("hello", "world") `shouldBe` "hello"
-
-  -- length
-  it "length" $ ("hello", ("world", "!!!")) ^. _2 ^. _1 . to length `shouldBe` 5
-
-  it "mapped" $ over mapped succ [1, 2, 3] `shouldBe` [2, 3, 4]
-  it "mapped.mapped" $ over (mapped . mapped) length [["hello", "world"], ["!!!"]] `shouldBe` [[5, 5], [3]]
-  it "mapped._2" $ over (mapped . _2) succ [(1, 2), (3, 4)] `shouldBe` [(1, 3), (3, 5)]
-
-  it "both" $ over both (+1) (1, 2) `shouldBe` (2, 3)
-  it "over not work in tuple" $ over mapped (*2) (1, 2, 3) `shouldBe` (1, 2, 6)
-
-  -- Control.Lens.Fold 可以重新组织结构，不能改变原值，多个值
+-- Control.Lens.Fold
+-- https://hackage.haskell.org/package/lens-5.2.3/docs/Control-Lens-Fold.html
+-- Can extract and reconstruct values in structure
+foldSpec :: SpecWith ()
+foldSpec = do
   it "(^..)" $ ([[1, 2], [3]] ^.. id) `shouldBe` [[[1, 2], [3]]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse) `shouldBe` [[1, 2], [3]]
   it "(^..)" $ ([[1, 2], [3]] ^.. traverse . traverse) `shouldBe` [1, 2, 3]
@@ -61,6 +47,24 @@ getterSpec = do
   it "folded" $ ((Nothing :: Maybe Int) ^.. folded) `shouldBe` []
   it "folded" $ ([(1, 2), (3, 4)] ^.. folded . both) `shouldBe` [1, 2, 3, 4]
   -- TestCase $ assertEqual "foldMapOf" (foldMapOf  sum [1, 2, 3] :: Int) 18
+
+getterSpec :: SpecWith ()
+getterSpec = do
+  -- get
+  it "get : ^." $ (("hello", "world") ^._2) `shouldBe` "world"
+  it "get : ^." $ (("hello", ("world", "!!!")) ^. (_2 . _1)) `shouldBe` "world"
+  it "get'" $ (("hello", ("world", "!!!")) ^._2 . _1) `shouldBe` "world"
+  it "view" $ view _1 ("hello", "world") `shouldBe` "hello"
+
+  -- length
+  it "length" $ ("hello", ("world", "!!!")) ^. _2 ^. _1 . to length `shouldBe` 5
+
+  it "mapped" $ over mapped succ [1, 2, 3] `shouldBe` [2, 3, 4]
+  it "mapped.mapped" $ over (mapped . mapped) length [["hello", "world"], ["!!!"]] `shouldBe` [[5, 5], [3]]
+  it "mapped._2" $ over (mapped . _2) succ [(1, 2), (3, 4)] `shouldBe` [(1, 3), (3, 5)]
+
+  it "both" $ over both (+1) (1, 2) `shouldBe` (2, 3)
+  it "over not work in tuple" $ over mapped (*2) (1, 2, 3) `shouldBe` (1, 2, 6)
 
   --Control.Lens.Getter
   it "(^.)" $ ("hello", "world") ^. _2 `shouldBe` "world"
@@ -134,6 +138,7 @@ combinatorSpec = do
 spec::SpecWith ()
 spec = do
   describe "videoSpec" videoSpec
+  describe "fold" foldSpec
   describe "getterSpec" getterSpec
   describe "setterSpec" setterSpec
   describe "combinatorSpec" combinatorSpec

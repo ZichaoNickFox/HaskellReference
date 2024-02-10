@@ -12,6 +12,7 @@ import           Data.Aeson.QQ
 import           Data.IORef
 import           Data.Monoid
 import qualified Data.Text         as Text
+import           Data.Traversable  (Traversable (traverse))
 import qualified Data.Vector       as Vector
 import           Test.Hspec
 import           Util              (shouldBeWhat)
@@ -122,12 +123,75 @@ foldTraversalIIISpec = do
     (\acc n -> if 'u' `elem` Text.unpack n then n : acc else acc) []) `shouldBe` ["su.mucheng", "ye.xiu"]
   it "usernames with 'u'" $
     (users ^.. key "users".values.key "name"._String.filtered (\n -> 'u' `elem` Text.unpack n)) `shouldBe` ["ye.xiu", "su.mucheng"]
+  it "has ip 51.2.244.193" $
+    (users & foldlOf
+    (key "users".values.key "metadata".key "associated_ips".values._String)
+    (\acc ip -> acc || ip == "51.2.244.193") False) `shouldBe` True
+  it "has ip 51.2.244.193" $
+    (users ^.. key "users".values.key "metadata".key "associated_ips".values._String & elem "51.2.244.193") `shouldBe` True
+  it "print ips" $ do
+    let pesudoPrint :: a -> IO ()
+        pesudoPrint a = return ()
+    (users & traverseOf (key "users".values.key "metadata".key "associated_ips".values._String) (fmap (const "") . pesudoPrint)) >> return ()
+  it "foldMapOf" $
+    (users & foldMapOf
+    (key "users".values.key "metadata".key "num_logins"._Integer) Sum)
+    `shouldBe` Sum 32
+  it "traverseOf" $
+    (users & traverseOf
+    (key "users".values.key "name"._String)
+    (Just . Text.append "cn.")) `shouldBe`
+      Just (Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "qyifan@xingxin.com"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "cn.qiao.yifan")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "cn.ye.xiu")]),
+        Object (KeyMap.fromList [("email",String "smucheng@xingxin.com"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "cn.su.mucheng")])]))]))
+
+foldTraversalIVSpec :: SpecWith ()
+foldTraversalIVSpec = do
+  it "values vs _Array.folded" $
+    (users & key "users".values.key "name"._String .~ "<unknown>") `shouldBe`
+      Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "qyifan@xingxin.com"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "<unknown>")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "<unknown>")]),
+        Object (KeyMap.fromList [("email",String "smucheng@xingxin.com"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "<unknown>")])]))])
+  it "values == _Array.traversed" $
+    (users & key "users"._Array.traversed.key "name"._String .~ "<unknown>") `shouldBe`
+      Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "qyifan@xingxin.com"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "<unknown>")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "<unknown>")]),
+        Object (KeyMap.fromList [("email",String "smucheng@xingxin.com"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "<unknown>")])]))])
+  it "values" $
+    (users & key "users".values.key "email"._String %~ (`Text.append` ".cn")) `shouldBe`
+      Object (KeyMap.fromList [("users",Array (Vector.fromList [
+        Object (KeyMap.fromList [("email",String "qyifan@xingxin.com.cn"),("metadata",Object (KeyMap.fromList [("num_logins",Number 5.0)])),("name",String "qiao.yifan")]),
+        Object (KeyMap.fromList [("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)])),("name",String "ye.xiu")]),
+        Object (KeyMap.fromList [("email",String "smucheng@xingxin.com.cn"),("metadata",Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])),("name",String "su.mucheng")])]))])
+  it "values" $
+    (users &
+    foldMapOf
+      (key "users".values.key "metadata".key "num_logins"._Integer)
+      (\x -> All $ x > 1)) `shouldBe` All True
+  it "_Array.traversed vs traversed" $
+    (users ^.. key "users"._Array.traversed.key "metadata") `shouldBe`
+    [Object (KeyMap.fromList [("num_logins",Number 5.0)]),
+     Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)]),
+     Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])]
+
+-- infixl 8 ^..^..
+-- (^..^..) :: s -> ((a -> Const (Endo [a]) b) -> s -> Const (Endo [a]) t) -> [a]
+-- (^..^..) s l =
+
+-- foldTraversalVSpec :: SpecWith ()
+-- foldTraversalVSpec = do
+--   it "^..^.." $ users ^..^.. key "users".values.key "email"._String `shouldBe` ["qyifan@xingxin.com", "smucheng@xingxin.com"]
 
 lensExerciseFoldTraversalSpec :: SpecWith ()
 lensExerciseFoldTraversalSpec = do
   describe "foldTraversalISpec" foldTraversalISpec
   describe "foldTraversalIISpec" foldTraversalIISpec
   describe "foldTraversalIIISpec" foldTraversalIIISpec
+  describe "foldTraversalIVSpec" foldTraversalIVSpec
+  -- describe "foldTraversalVSpec" foldTraversalVSpec
 
 main :: IO ()
 main = hspec lensExerciseFoldTraversalSpec
