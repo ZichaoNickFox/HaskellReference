@@ -6,16 +6,17 @@ module Package.Lens.LensExerciseFoldTraversalSpec where
 import           Control.Lens
 import           Control.Lens.TH
 import           Data.Aeson
-import qualified Data.Aeson.KeyMap as KeyMap
+import qualified Data.Aeson.KeyMap   as KeyMap
 import           Data.Aeson.Lens
 import           Data.Aeson.QQ
 import           Data.IORef
 import           Data.Monoid
-import qualified Data.Text         as Text
-import           Data.Traversable  (Traversable (traverse))
-import qualified Data.Vector       as Vector
+import qualified Data.Text           as Text
+import           Data.Traversable    (Traversable (traverse))
+import qualified Data.Vector         as Vector
+import           Language.Haskell.TH (appE)
 import           Test.Hspec
-import           Util              (shouldBeWhat)
+import           Util                (shouldBeWhat)
 
 -- https://williamyaoh.com/posts/2019-04-25-lens-exercises.html
 
@@ -177,13 +178,17 @@ foldTraversalIVSpec = do
      Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "52.49.1.233",String "52.49.1.234"])),("num_logins",Number 27.0)]),
      Object (KeyMap.fromList [("associated_ips",Array (Vector.fromList [String "51.2.244.193"]))])]
 
--- infixl 8 ^..^..
--- (^..^..) :: s -> ((a -> Const (Endo [a]) b) -> s -> Const (Endo [a]) t) -> [a]
--- (^..^..) s l =
+infixl 8 ^..^..
+(^..^..) :: s -> ((a -> Const (Endo [a]) b) -> s -> Const (Endo [a]) t) -> [a]
+(^..^..) s l = appEndo (getConst $ l (\a -> Const (Endo (a :))) s) []
 
--- foldTraversalVSpec :: SpecWith ()
--- foldTraversalVSpec = do
---   it "^..^.." $ users ^..^.. key "users".values.key "email"._String `shouldBe` ["qyifan@xingxin.com", "smucheng@xingxin.com"]
+-- sequenceAOfsequenceAOf :: ((f b -> f b) -> s -> f t) -> s -> f t
+-- sequenceAOfsequenceAOf g s =
+
+foldTraversalVSpec :: SpecWith ()
+foldTraversalVSpec = do
+  it "^..^.." $ users ^..^.. key "users".values.key "email"._String `shouldBe` ["qyifan@xingxin.com", "smucheng@xingxin.com"]
+  -- it "sequenceAOfsequenceAOf" $ sequenceAOfsequenceAOf  both ([1, 2], [3, 4]) `shouldBe` [(1, 3), (1, 4), (2, 3), (2, 4)]
 
 lensExerciseFoldTraversalSpec :: SpecWith ()
 lensExerciseFoldTraversalSpec = do
@@ -191,7 +196,7 @@ lensExerciseFoldTraversalSpec = do
   describe "foldTraversalIISpec" foldTraversalIISpec
   describe "foldTraversalIIISpec" foldTraversalIIISpec
   describe "foldTraversalIVSpec" foldTraversalIVSpec
-  -- describe "foldTraversalVSpec" foldTraversalVSpec
+  describe "foldTraversalVSpec" foldTraversalVSpec
 
 main :: IO ()
 main = hspec lensExerciseFoldTraversalSpec

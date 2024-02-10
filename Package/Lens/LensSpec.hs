@@ -134,6 +134,7 @@ combinatorSpec = do
   it "filtered" $ [1, 2, 3] ^.. folded.filtered even `shouldBe` [2]
   it "filtered" $ ["hello", "world", "!"] ^.. folded.filtered (\n -> 'h' `elem` n) `shouldBe` ["hello"]
   it "filtered" $ [(1, 2), (3, 4)] ^.. folded.both.filtered even `shouldBe` [2, 4]
+  it "sequenceAOf" $ sequenceAOf both ([1, 2], [3, 4]) `shouldBe` [(1, 3), (1, 4), (2, 3), (2, 4)]
 
 spec::SpecWith ()
 spec = do

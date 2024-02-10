@@ -102,11 +102,11 @@ dataTupleSpec = do
 ioRefSpec :: SpecWith ()
 ioRefSpec = do
   it "newIORef readIORef" $ do
-    r <- newIORef 0 
+    r <- newIORef 0
     v <- readIORef r
     v `shouldBe` 0
   it "writeIORef" $ do
-    r <- newIORef 0 
+    r <- newIORef 0
     writeIORef r 1
     v <- readIORef r
     v `shouldBe` 1
@@ -191,6 +191,19 @@ semigroupSpec = do
   it "Product" $ Product 2 <> Product 3 `shouldBe` Product 6
   -- it "diff" TODO:
 
+endoSpec :: SpecWith ()
+endoSpec = do
+  -- like += -= in c++
+  it "endo" $ do
+    let compute = Endo ("hello " ++ )
+    appEndo compute "world" `shouldBe` "hello world"
+  it "endo" $ do
+    let compute = Endo (++ "!")
+    appEndo compute "world" `shouldBe` "world!"
+  it "endo" $ do
+    let compute = Endo ("hello " ++ ) <> Endo (++ "!")
+    appEndo compute "world" `shouldBe` "hello world!"
+
 spec::SpecWith ()
 spec = do
   describe "preludeSpec" preludeSpec
@@ -205,6 +218,7 @@ spec = do
   describe "constSpec" constSpec
   describe "monoidSpec" monoidSpec
   describe "semigroupSpec" semigroupSpec
+  describe "endo" endoSpec
 
 main :: IO ()
 main = hspec spec
