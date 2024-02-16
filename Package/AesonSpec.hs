@@ -38,8 +38,8 @@ instance ToJSON PersonByHand where
 instance FromJSON PersonByHand where
   parseJSON = withObject "Person" $ \v -> PersonByHand <$> v .: "name" <*> v .: "age"
 
-usage :: SpecWith ()
-usage = do
+usageSpec :: SpecWith ()
+usageSpec = do
   describe "encode" $ do
     it "auto gen" $ encode (PersonAutoGen {name="zichao.liu", age=33}) `shouldBe` "{\"name\":\"zichao.liu\",\"age\":33}"
     it "by hand" $ encode (PersonByHand {name="zichao.liu", age=33}) `shouldBe` "{\"name\":\"zichao.liu\",\"age\":33}"
@@ -62,7 +62,7 @@ usage = do
 
 spec::SpecWith ()
 spec = do
-  usage
+  usageSpec
 
 main :: IO ()
 main = hspec spec

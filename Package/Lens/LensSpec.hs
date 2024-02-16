@@ -4,6 +4,8 @@ import           Control.Lens
 import           Control.Lens.Combinators
 import           Data.Char
 import           Data.Data.Lens
+import           Data.Monoid
+import           Data.Text                (pack)
 import           Data.Text.Lens
 import           Test.Hspec
 import           Util                     (shouldBeWhat)
@@ -46,7 +48,8 @@ foldSpec = do
   it "folded" $ (Just 3 ^.. folded) `shouldBe` [3]
   it "folded" $ ((Nothing :: Maybe Int) ^.. folded) `shouldBe` []
   it "folded" $ ([(1, 2), (3, 4)] ^.. folded . both) `shouldBe` [1, 2, 3, 4]
-  -- TestCase $ assertEqual "foldMapOf" (foldMapOf  sum [1, 2, 3] :: Int) 18
+  it "foldMapOf" $ foldMapOf folded Sum [1, 2, 3] `shouldBe` Sum 6
+  it "foldMapOf" $ foldMapOf folded (:[]) [1, 2, 3] `shouldBe` [1, 2, 3]
 
 getterSpec :: SpecWith ()
 getterSpec = do
@@ -136,6 +139,10 @@ combinatorSpec = do
   it "filtered" $ [(1, 2), (3, 4)] ^.. folded.both.filtered even `shouldBe` [2, 4]
   it "sequenceAOf" $ sequenceAOf both ([1, 2], [3, 4]) `shouldBe` [(1, 3), (1, 4), (2, 3), (2, 4)]
 
+textSpec :: SpecWith ()
+textSpec = do
+  it "text" $ pack "hello world" ^.. unpacked.folded.filtered (== 'o') `shouldBe` "oo"
+
 spec::SpecWith ()
 spec = do
   describe "videoSpec" videoSpec
@@ -143,6 +150,7 @@ spec = do
   describe "getterSpec" getterSpec
   describe "setterSpec" setterSpec
   describe "combinatorSpec" combinatorSpec
+  describe "textSpec" textSpec
 
 main :: IO ()
 main = hspec spec

@@ -13,6 +13,9 @@ let
     p.lens-aeson
     p.aeson
     p.aeson-qq
+    p.pcre-heavy
+    p.safe
+    p.mono-traversable
   ]);
 in
 pkgs.mkShell {

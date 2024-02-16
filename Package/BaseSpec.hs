@@ -204,6 +204,15 @@ endoSpec = do
     let compute = Endo ("hello " ++ ) <> Endo (++ "!")
     appEndo compute "world" `shouldBe` "hello world!"
 
+applicativeSpec :: SpecWith ()
+applicativeSpec = do
+  it "liftA" $ liftA (filter ('d' `elem`)) (Identity ["hello", "world"]) `shouldBe` Identity ["world"]
+
+monadSpec :: SpecWith ()
+monadSpec = do
+  it "liftM" $ liftM (filter ('d' `elem`)) (Identity ["hello", "world"]) `shouldBe` Identity ["world"]
+  it "forM" $ forM ["hello", "world"] (Identity . fmap toUpper) `shouldBe` Identity ["HELLO", "world"]
+
 spec::SpecWith ()
 spec = do
   describe "preludeSpec" preludeSpec
@@ -218,7 +227,9 @@ spec = do
   describe "constSpec" constSpec
   describe "monoidSpec" monoidSpec
   describe "semigroupSpec" semigroupSpec
-  describe "endo" endoSpec
+  describe "endoSpec" endoSpec
+  describe "applicativeSpec" applicativeSpec
+  describe "monadSpec" monadSpec
 
 main :: IO ()
 main = hspec spec
