@@ -4,6 +4,7 @@ module Package.BaseSpec where
 import           Control.Applicative
 import           Control.Exception
 import           Control.Monad
+import           Control.Monad.IO.Class
 import           Data.Char
 import           Data.Either
 import           Data.Functor.Const
@@ -18,6 +19,7 @@ import           Distribution.Simple.Utils             (doesExecutableExist)
 import           System.Environment
 import           Test.Hspec
 import           Text.Read
+import           Util                                  (shouldBeWhat)
 
 preludeSpec :: SpecWith ()
 preludeSpec = do
@@ -54,6 +56,20 @@ preludeSpec = do
     writeFile "Data/Test.txt" "ABC"
     >> readFile "Data/Test.txt" >>= (\s -> s `shouldBe` "ABC")
     >> writeFile "Data/Test.txt" "Hello World"
+
+-- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Either.html
+eitherSpec :: SpecWith ()
+eitherSpec = do
+  it "fmap ignore Left" $ fmap (*2) (Left "foo" :: Either String Int) `shouldBe` (Left "foo")
+  it "fmap Right" $ fmap (*2) (Right 1 :: Either String Int) `shouldBe` (Right 2)
+  it "either" $ either length (*2) (Left "foo") `shouldBe` 3
+  it "either" $ either length (*2) (Right 3 :: Either String Int) `shouldBe` 6
+  it "lefts" $ lefts [Left "a", Right 1, Left "b", Right 2] `shouldBe` ["a", "b"]
+  it "rights" $ rights [Left "a", Right 1, Left "b", Right 2] `shouldBe` [1, 2]
+  it "isLeft" $ isLeft (Left 1) `shouldBe` True
+  it "isLeft" $ isLeft (Right 1) `shouldBe` False
+  it "isRight" $ isRight (Left 1) `shouldBe` False
+  it "isRight" $ isRight (Right 1) `shouldBe` True
 
 -- https://hackage.haskell.org/package/base-4.19.0.0/docs/Data-Maybe.html
 maybeSpec :: SpecWith ()
@@ -151,13 +167,6 @@ typeableSpec = do
     tyConModule (typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "Package.BaseSpec"
     tyConPackage (typeRepTyCon $ typeOf zichaoLiu) `shouldBe` "main"
 
-----------------------------------------------------------------------------------------------------
-
--- controlMonadSpec :: SpecWith ()
--- controlMonadSpec = do
---   describe "Control.Monad" $ do
---     it "liftIO" $ do
-
 -- // ANCHOR[id=Identity] Identity
 -- Identity is a functor satisfied : f <$> Identity a = Identity (f a)
 identitySpec :: SpecWith ()
@@ -211,12 +220,33 @@ applicativeSpec = do
 monadSpec :: SpecWith ()
 monadSpec = do
   it "liftM" $ liftM (filter ('d' `elem`)) (Identity ["hello", "world"]) `shouldBe` Identity ["world"]
-  it "forM" $ forM ["hello", "world"] (Identity . fmap toUpper) `shouldBe` Identity ["HELLO", "world"]
+  it "forM" $ forM ["hello", "world"] (Identity . fmap toUpper) `shouldBe` Identity ["HELLO", "WORLD"]
+  it "when" $ do
+    r <- newIORef 0
+    when True (writeIORef r 1)
+    v <- readIORef r
+    v `shouldBe` 1
+  it "when" $ do
+    r <- newIORef 0
+    when False (writeIORef r 1)
+    v <- readIORef r
+    v `shouldBe` 0
+  it "unless" $ do
+    r <- newIORef 0
+    unless False (writeIORef r 1)
+    v <- readIORef r
+    v `shouldBe` 1
+  it "unless" $ do
+    r <- newIORef 0
+    unless True (writeIORef r 1)
+    v <- readIORef r
+    v `shouldBe` 0
 
 spec::SpecWith ()
 spec = do
   describe "preludeSpec" preludeSpec
   describe "maybeSpec" maybeSpec
+  describe "eitherSpec" eitherSpec
   describe "dataEitherSpec" dataEitherSpec
   describe "dataTupleSpec" dataTupleSpec
   describe "ioRefSpec" ioRefSpec
