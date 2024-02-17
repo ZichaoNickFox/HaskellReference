@@ -1,10 +1,14 @@
 module Package.MTL.MTLSpec where
 
+import           Control.Applicative        (Applicative)
 import           Control.Monad.Except
+import           Control.Monad.Reader
 import           Control.Monad.Trans.Writer
 import           Control.Monad.Writer
 import           Data.Functor.Identity
+import           Data.Int                   (Int)
 import           Data.IORef
+import           Distribution.ReadE         (ReadE (runReadE))
 import           Test.Hspec
 
 writerSpec :: SpecWith()
@@ -46,10 +50,37 @@ exceptSpec = do
     r <- runExceptT (ExceptT $ pure (Left "err" :: Either String Int))
     r `shouldBe` Left "err"
 
+data Config = Config {verbose :: String, maxConnection :: Int}
+configs :: Reader Config String
+configs = do
+  let configLog :: Reader Config String
+      configLog = do
+        config <- ask
+        return $ "Log verbose : " <> verbose config
+      configDB :: Reader Config String
+      configDB = do
+        config <- ask
+        return $ "DB max connection : " <> show (maxConnection config)
+  log1 <- configLog
+  log2 <- configDB
+  return $ log1 <> "\n" <> log2
+
+-- https://blog.ssanj.net/posts/2014-09-23-A-Simple-Reader-Monad-Example.html
+readerSpec :: SpecWith ()
+readerSpec = do
+  it "reader" $ do
+    let r = return 5 :: Reader String Int
+    runReader r "This is your env" `shouldBe` 5
+  it "reader example configs" $ do
+    let r = return "" :: Reader Config String
+    runReader configs (Config "DEBUG" 10)
+      `shouldBe` "Log verbose : DEBUG\nDB max connection : 10"
+
 spec :: SpecWith ()
 spec = do
   describe "writerSpec" writerSpec
   describe "exceptSpec" exceptSpec
+  describe "readerSpec" readerSpec
 
 main :: IO ()
 main = hspec spec
