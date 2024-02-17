@@ -56,11 +56,11 @@ configs = do
   let configLog :: Reader Config String
       configLog = do
         config <- ask
-        return $ "Log verbose : " <> verbose config
+        return $ "ask - Log verbose : " <> verbose config
       configDB :: Reader Config String
       configDB = do
-        config <- ask
-        return $ "DB max connection : " <> show (maxConnection config)
+        maxConnection <- asks maxConnection
+        return $ "asks - DB max connection : " <> show maxConnection
   log1 <- configLog
   log2 <- configDB
   return $ log1 <> "\n" <> log2
@@ -74,7 +74,7 @@ readerSpec = do
   it "reader example configs" $ do
     let r = return "" :: Reader Config String
     runReader configs (Config "DEBUG" 10)
-      `shouldBe` "Log verbose : DEBUG\nDB max connection : 10"
+      `shouldBe` "ask - Log verbose : DEBUG\nasks - DB max connection : 10"
 
 spec :: SpecWith ()
 spec = do

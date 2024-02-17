@@ -8,25 +8,28 @@ import           Test.Hspec
 doSpec :: SpecWith ()
 doSpec = do
   it "it + do, let - in" $ do
-    let
-      eraseDoSpec1 :: Maybe String
-      eraseDoSpec1 = do
-        a <- Just 1
-        b <- Just 2
-        return $ show (a + b)
-    eraseDoSpec1 `shouldBe` Just "3"
+    let getMaybe :: Maybe String
+        getMaybe = do
+          a <- Just 1
+          b <- Just 2
+          return $ show (a + b)
+    getMaybe `shouldBe` Just "3"
   it "it - do, let + in" $
-    let
-      eraseDoSpec2 :: Maybe String
-      eraseDoSpec2 = do
-        a <- Just 1;
-        b <- Just 2;
-        return $ show (a + b)
-    in eraseDoSpec2 `shouldBe` Just "3"
+    let getMaybe :: Maybe String
+        getMaybe = do
+          a <- Just 1
+          b <- Just 2
+          return $ show (a + b)
+    in  getMaybe `shouldBe` Just "3"
+  it "<-" $ do
+    let getIOMaybe :: IO (Maybe String)
+        getIOMaybe = return (Just "3")
+    Just s <- getIOMaybe
+    s `shouldBe` "3"
 
 spec::SpecWith()
 spec = do
-  describe "doSpec" doSepc
+  describe "doSpec" doSpec
 
 main :: IO ()
 main = hspec spec

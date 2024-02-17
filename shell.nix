@@ -18,6 +18,8 @@ let
     p.typerep-map
     p.vault
     p.wai
+    p.string-random
+    p.random
   ]);
 in
 pkgs.mkShell {
