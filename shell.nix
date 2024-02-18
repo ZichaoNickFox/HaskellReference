@@ -20,6 +20,7 @@ let
     p.wai
     p.string-random
     p.random
+    p.katip
   ]);
 in
 pkgs.mkShell {

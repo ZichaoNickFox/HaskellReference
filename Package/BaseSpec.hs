@@ -17,6 +17,7 @@ import           Data.Typeable
 import           Distribution.PackageDescription.Check (CheckPackageContentOps (doesFileExist))
 import           Distribution.Simple.Utils             (doesExecutableExist)
 import           System.Environment
+import           System.IO
 import           Test.Hspec
 import           Text.Read
 import           Util                                  (shouldBeWhat)
@@ -242,6 +243,19 @@ monadSpec = do
     v <- readIORef r
     v `shouldBe` 0
 
+exceptionSpec :: SpecWith ()
+exceptionSpec = do
+  it "bracket" $ do
+    bracket (openFile "Data/Test.txt" ReadMode) hClose (\h -> do
+      content <- hGetContents h
+      content `shouldBe` "Hello World"
+      )
+  it "withFile" $ do
+    withFile "Data/Test.txt" ReadMode (\h -> do
+      content <- hGetContents h
+      content `shouldBe` "Hello World"
+      )
+
 spec::SpecWith ()
 spec = do
   describe "preludeSpec" preludeSpec
@@ -260,6 +274,7 @@ spec = do
   describe "endoSpec" endoSpec
   describe "applicativeSpec" applicativeSpec
   describe "monadSpec" monadSpec
+  describe "exceptionSpec" exceptionSpec
 
 main :: IO ()
 main = hspec spec
