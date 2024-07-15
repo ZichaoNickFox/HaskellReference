@@ -21,6 +21,9 @@ let
     p.string-random
     p.random
     p.katip
+    p.postgresql-simple
+    p.postgresql-migration
+    p.resource-pool
   ]);
 in
 pkgs.mkShell {

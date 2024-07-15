@@ -124,11 +124,11 @@ prismsIIISpec = do
   it "^.^." $ Just LT ^.^. _Just_Just `shouldBe` LT
   it "%~%~" $ (Just LT & _Just_Just %~%~ show) `shouldBe` Just "LT"
 
-lensExercisePrismsSpec :: SpecWith ()
-lensExercisePrismsSpec = do
+spec :: SpecWith ()
+spec = do
   describe "prismsISpec" prismsISpec
   describe "prismsIISpec" prismsIISpec
   describe "prismsIIISpec" prismsIIISpec
 
 main :: IO ()
-main = hspec lensExercisePrismsSpec
+main = hspec spec

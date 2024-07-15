@@ -3,7 +3,6 @@
 module Package.TextSpec (spec) where
 
 import           Data.Char
-import           Data.MonoTraversable
 import           Data.Text            hiding (toUpper)
 import           Prelude              hiding (map)
 import           Test.Hspec

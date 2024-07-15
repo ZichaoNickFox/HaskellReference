@@ -1,7 +1,6 @@
 module Package.VaultSpec (spec) where
 
 import           Data.Vault.Lazy    as Vault
-import           Pattern.StateTSpec hiding (spec)
 import           Test.Hspec
 import           Util
 

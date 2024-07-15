@@ -1,4 +1,4 @@
-module Package.MTL.MTLSpec where
+module Package.MTLSpec where
 
 import           Control.Applicative        (Applicative)
 import           Control.Monad.Except

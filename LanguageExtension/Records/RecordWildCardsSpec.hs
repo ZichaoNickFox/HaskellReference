@@ -1,6 +1,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
-module LanguageExtension.RecordWildCardsSpec (spec) where
+module LanguageExtension.Records.RecordWildCardsSpec (spec) where
 
 import           Test.Hspec
 

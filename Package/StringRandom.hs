@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Package.StringRandom where
 
 import           Test.Hspec

@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
 module Package.BaseSpec where
 
 import           Control.Applicative
@@ -17,6 +16,7 @@ import           Data.Typeable
 import           Distribution.PackageDescription.Check (CheckPackageContentOps (doesFileExist))
 import           Distribution.Simple.Utils             (doesExecutableExist)
 import           System.Environment
+import           System.Exit
 import           System.IO
 import           Test.Hspec
 import           Text.Read
@@ -42,7 +42,7 @@ preludeSpec = do
     (+1) <$> [1, 2, 3] `shouldBe` [2, 3, 4]
 
     when True (Just ()) `shouldBe` (Just ())
-    when False (Just ()) `shouldBe` (return ())
+    when False (Just ()) `shouldBe` return ()
 
     unless False (Just ()) `shouldBe` (Just ())
     unless True (Just ()) `shouldBe` (return ())
@@ -255,6 +255,8 @@ exceptionSpec = do
       content <- hGetContents h
       content `shouldBe` "Hello World"
       )
+  it "exitFailure" $ do
+    exitFailure `shouldThrow` anyException
 
 spec::SpecWith ()
 spec = do

@@ -190,8 +190,8 @@ foldTraversalVSpec = do
   it "^..^.." $ users ^..^.. key "users".values.key "email"._String `shouldBe` ["qyifan@xingxin.com", "smucheng@xingxin.com"]
   -- it "sequenceAOfsequenceAOf" $ sequenceAOfsequenceAOf  both ([1, 2], [3, 4]) `shouldBe` [(1, 3), (1, 4), (2, 3), (2, 4)]
 
-lensExerciseFoldTraversalSpec :: SpecWith ()
-lensExerciseFoldTraversalSpec = do
+spec :: SpecWith ()
+spec = do
   describe "foldTraversalISpec" foldTraversalISpec
   describe "foldTraversalIISpec" foldTraversalIISpec
   describe "foldTraversalIIISpec" foldTraversalIIISpec
@@ -199,4 +199,4 @@ lensExerciseFoldTraversalSpec = do
   describe "foldTraversalVSpec" foldTraversalVSpec
 
 main :: IO ()
-main = hspec lensExerciseFoldTraversalSpec
+main = hspec spec
